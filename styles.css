@@ -1,0 +1,770 @@
+/* Tweet top buttons container */
+.tweet-top-buttons {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  gap: 4px;
+}
+
+/* Polymarket button styles */
+.polymarket-note-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: rgb(113, 118, 123);
+  margin: 0;
+}
+
+.polymarket-note-button:hover {
+  background-color: rgba(29, 155, 240, 0.1);
+  color: rgb(29, 155, 240);
+}
+
+.polymarket-button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.polymarket-button-content img {
+  border-radius: 2px;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.polymarket-note-button:hover .polymarket-button-content img {
+  opacity: 1;
+}
+
+/* Grok-style Polymarket button */
+.polymarket-grok-button:hover img {
+  opacity: 1 !important;
+}
+
+.polymarket-grok-button:hover {
+  background-color: rgba(29, 155, 240, 0.1);
+}
+
+.polymarket-grok-button:hover + div {
+  color: rgb(29, 155, 240) !important;
+}
+
+/* Market Notes Popup */
+.market-notes-popup {
+  position: fixed;
+  width: 350px;
+  max-height: 500px;
+  background: rgb(21, 32, 43);
+  border: 1px solid rgb(47, 51, 54);
+  border-radius: 16px;
+  box-shadow: rgba(255, 255, 255, 0.2) 0px 0px 15px, rgba(255, 255, 255, 0.15) 0px 0px 3px 1px;
+  overflow: hidden;
+  z-index: 10000;
+  color: rgb(231, 233, 234);
+}
+
+.market-notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgb(47, 51, 54);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-left h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: rgb(231, 233, 234);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.market-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.all-markets-btn {
+  background: rgb(29, 155, 240);
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.all-markets-btn:hover {
+  background: rgb(26, 140, 216);
+}
+
+.next-market-btn {
+  background: rgba(239, 243, 244, 0.1);
+  border: 1px solid rgb(47, 51, 54);
+  color: rgb(231, 233, 234);
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.next-market-btn:hover {
+  background: rgba(239, 243, 244, 0.2);
+  border-color: rgb(113, 118, 123);
+}
+
+.draggable-header {
+  cursor: grab;
+  user-select: none;
+}
+
+.draggable-header:active {
+  cursor: grabbing;
+}
+
+
+.close-popup {
+  background: none;
+  border: none;
+  color: rgb(113, 118, 123);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.close-popup:hover {
+  background-color: rgba(239, 243, 244, 0.1);
+  color: rgb(231, 233, 234);
+}
+
+.market-notes-content {
+  padding: 16px 20px 20px;
+}
+
+.market-info h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: rgb(231, 233, 234);
+}
+
+.market-prices {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.price-item {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.price-item.yes {
+  background-color: rgba(0, 186, 124, 0.1);
+  border: 1px solid rgba(0, 186, 124, 0.3);
+}
+
+.price-item.no {
+  background-color: rgba(249, 24, 128, 0.1);
+  border: 1px solid rgba(249, 24, 128, 0.3);
+}
+
+.price-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  color: rgb(113, 118, 123);
+}
+
+.price-value {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.yes .price-value {
+  color: rgb(0, 186, 124);
+}
+
+.no .price-value {
+  color: rgb(249, 24, 128);
+}
+
+.market-volume {
+  font-size: 14px;
+  color: rgb(113, 118, 123);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.market-chart {
+  font-size: 24px;
+  text-align: center;
+  margin: 16px 0;
+  padding: 20px;
+  background-color: rgba(47, 51, 54, 0.3);
+  border-radius: 8px;
+}
+
+.market-description {
+  font-size: 14px;
+  line-height: 1.4;
+  color: rgb(182, 186, 190);
+  margin: 12px 0 0 0;
+}
+
+/* Carousel dots */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 0 8px 0;
+  margin-top: 16px;
+  border-top: 1px solid rgb(47, 51, 54);
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgb(113, 118, 123);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.5;
+}
+
+.carousel-dot:hover {
+  opacity: 0.8;
+  transform: scale(1.2);
+}
+
+.carousel-dot.active {
+  background: rgb(29, 155, 240);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Dark mode support for Twitter's light theme */
+[data-theme="light"] .market-notes-popup {
+  background: rgb(255, 255, 255);
+  border: 1px solid rgb(207, 217, 222);
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .market-notes-header {
+  border-bottom: 1px solid rgb(207, 217, 222);
+}
+
+[data-theme="light"] .header-left h3 {
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .close-popup {
+  color: rgb(83, 100, 113);
+}
+
+[data-theme="light"] .close-popup:hover {
+  background-color: rgba(15, 20, 25, 0.1);
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .market-info h4 {
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .price-label {
+  color: rgb(83, 100, 113);
+}
+
+[data-theme="light"] .market-volume {
+  color: rgb(83, 100, 113);
+}
+
+[data-theme="light"] .market-chart {
+  background-color: rgba(207, 217, 222, 0.3);
+}
+
+[data-theme="light"] .market-description {
+  color: rgb(83, 100, 113);
+}
+
+[data-theme="light"] .carousel-dots {
+  border-top-color: rgb(207, 217, 222);
+}
+
+[data-theme="light"] .carousel-dot {
+  background: rgb(83, 100, 113);
+}
+
+/* Polymarket Positions Section */
+.polymarket-positions-section {
+  margin: 16px 0;
+  padding: 0 16px;
+  border-bottom: 1px solid rgb(47, 51, 54);
+}
+
+.positions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.positions-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: rgb(231, 233, 234);
+}
+
+.positions-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab-button {
+  background: none;
+  border: 1px solid rgb(47, 51, 54);
+  color: rgb(113, 118, 123);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+  background-color: rgba(239, 243, 244, 0.1);
+  border-color: rgb(113, 118, 123);
+}
+
+.tab-button.active {
+  background-color: rgb(29, 155, 240);
+  border-color: rgb(29, 155, 240);
+  color: rgb(255, 255, 255);
+}
+
+.positions-carousel {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.positions-container {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.positions-track {
+  display: flex;
+  gap: 12px;
+  transition: transform 0.3s ease;
+  padding: 4px 0;
+}
+
+.positions-track.hidden {
+  display: none;
+}
+
+.position-card {
+  flex: 0 0 280px;
+  background: rgb(21, 32, 43);
+  border: 1px solid rgb(47, 51, 54);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.position-card:hover {
+  border-color: rgb(29, 155, 240);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.position-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.position-badges {
+  display: flex;
+  gap: 6px;
+}
+
+.position-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.position-badge.yes-position {
+  background-color: rgba(0, 186, 124, 0.2);
+  color: rgb(0, 186, 124);
+}
+
+.position-badge.no-position {
+  background-color: rgba(249, 24, 128, 0.2);
+  color: rgb(249, 24, 128);
+}
+
+.status-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.status-badge.open {
+  background-color: rgba(29, 155, 240, 0.2);
+  color: rgb(29, 155, 240);
+}
+
+.status-badge.closed {
+  background-color: rgba(113, 118, 123, 0.2);
+  color: rgb(113, 118, 123);
+}
+
+.position-pnl {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.position-pnl.positive {
+  color: rgb(0, 186, 124);
+}
+
+.position-pnl.negative {
+  color: rgb(249, 24, 128);
+}
+
+.position-title {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: rgb(231, 233, 234);
+}
+
+.position-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 11px;
+  color: rgb(113, 118, 123);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.stat-value {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgb(231, 233, 234);
+}
+
+.position-volume {
+  font-size: 12px;
+  color: rgb(113, 118, 123);
+  text-align: center;
+}
+
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgb(47, 51, 54);
+  color: rgb(231, 233, 234);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+.carousel-nav:hover {
+  background: rgba(0, 0, 0, 0.9);
+  border-color: rgb(113, 118, 123);
+}
+
+.carousel-nav.prev {
+  left: -16px;
+}
+
+.carousel-nav.next {
+  right: -16px;
+}
+
+/* Light theme support */
+[data-theme="light"] .polymarket-positions-section {
+  border-bottom: 1px solid rgb(207, 217, 222);
+}
+
+[data-theme="light"] .positions-header h3 {
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .tab-button {
+  border-color: rgb(207, 217, 222);
+  color: rgb(83, 100, 113);
+}
+
+[data-theme="light"] .tab-button:hover {
+  background-color: rgba(15, 20, 25, 0.1);
+  border-color: rgb(83, 100, 113);
+}
+
+[data-theme="light"] .position-card {
+  background: rgb(255, 255, 255);
+  border-color: rgb(207, 217, 222);
+}
+
+[data-theme="light"] .position-card:hover {
+  border-color: rgb(83, 100, 113);
+}
+
+[data-theme="light"] .position-title {
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .stat-value {
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .carousel-nav {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgb(207, 217, 222);
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .carousel-nav:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgb(83, 100, 113);
+}
+
+/* All Markets Modal */
+.all-markets-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20000;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: rgb(21, 32, 43);
+  border: 1px solid rgb(47, 51, 54);
+  border-radius: 16px;
+  width: 500px;
+  max-width: 90vw;
+  max-height: 70vh;
+  overflow: hidden;
+  color: rgb(231, 233, 234);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgb(47, 51, 54);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: rgb(113, 118, 123);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background-color: rgba(239, 243, 244, 0.1);
+  color: rgb(231, 233, 234);
+}
+
+.markets-list {
+  padding: 16px 20px;
+  max-height: calc(70vh - 80px);
+  overflow-y: auto;
+}
+
+.market-item {
+  padding: 12px 16px;
+  border: 1px solid rgb(47, 51, 54);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.market-item:hover {
+  border-color: rgb(29, 155, 240);
+  background-color: rgba(29, 155, 240, 0.05);
+}
+
+.market-item h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgb(231, 233, 234);
+}
+
+.market-prices-mini {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.yes-price {
+  color: rgb(0, 186, 124);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.no-price {
+  color: rgb(249, 24, 128);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.market-volume-mini {
+  font-size: 11px;
+  color: rgb(113, 118, 123);
+}
+
+/* Light theme modal */
+[data-theme="light"] .modal-content {
+  background: rgb(255, 255, 255);
+  border-color: rgb(207, 217, 222);
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .modal-header {
+  border-bottom-color: rgb(207, 217, 222);
+}
+
+[data-theme="light"] .modal-close {
+  color: rgb(83, 100, 113);
+}
+
+[data-theme="light"] .modal-close:hover {
+  background-color: rgba(15, 20, 25, 0.1);
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .market-item {
+  border-color: rgb(207, 217, 222);
+}
+
+[data-theme="light"] .market-item:hover {
+  border-color: rgb(29, 155, 240);
+  background-color: rgba(29, 155, 240, 0.05);
+}
+
+[data-theme="light"] .market-item h4 {
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .market-volume-mini {
+  color: rgb(83, 100, 113);
+}
+
+/* Light theme buttons */
+[data-theme="light"] .next-market-btn {
+  background: rgba(15, 20, 25, 0.1);
+  border-color: rgb(207, 217, 222);
+  color: rgb(15, 20, 25);
+}
+
+[data-theme="light"] .next-market-btn:hover {
+  background: rgba(15, 20, 25, 0.2);
+  border-color: rgb(83, 100, 113);
+}

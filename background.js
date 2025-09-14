@@ -4,7 +4,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('🔍 [BACKGROUND] Received message:', request);
 
   if (request.action === 'fetchMarketData') {
-    fetchMarketDataBackground()
+    fetchMarketDataBackground(request.marketType)
       .then(data => {
         console.log('✅ [BACKGROUND] Got market data:', data);
         sendResponse({ success: true, data });
@@ -69,13 +69,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-async function fetchMarketDataBackground() {
-  const urls = ['http://127.0.0.1:5000/api/market', 'http://localhost:5000/api/market'];
+async function fetchMarketDataBackground(marketType = 'single') {
+  // Choose endpoint based on market type
+  let endpoint = '/api/market';
+  if (marketType === 'carousel') {
+    endpoint = '/api/events'; // Use events endpoint for carousel
+  }
+
+  const urls = [`http://127.0.0.1:5000${endpoint}`, `http://localhost:5000${endpoint}`];
 
   for (const url of urls) {
     try {
-      console.log(`🔍 [BACKGROUND] Trying ${url}`);
-      const response = await fetch(url, {
+      console.log(`🔍 [BACKGROUND] Trying ${url} with marketType: ${marketType}`);
+
+      let queryParams = '';
+      if (marketType && marketType !== 'single') {
+        queryParams = `?marketType=${marketType}`;
+      }
+
+      const response = await fetch(url + queryParams, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +104,13 @@ async function fetchMarketDataBackground() {
       const data = await response.json();
       console.log(`🔍 [BACKGROUND] Got data:`, data);
 
-      if (data.success && data.market) {
+      // Handle carousel data format
+      if (marketType === 'carousel' && data.success && data.events) {
+        console.log(`✅ [BACKGROUND] Success! Returning carousel data with ${data.events.length} events`);
+        return data;
+      }
+      // Handle single/multi market data format
+      else if (data.success && data.market) {
         console.log(`✅ [BACKGROUND] Success! Returning market data`);
         return data.market;
       } else {

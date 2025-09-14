@@ -2,6 +2,9 @@
 // All position data now comes from live Polymarket API
 
 let marketNotesPopup = null;
+let currentEventData = null;
+let currentEventIndex = 0;
+let allEvents = [];
 
 // Function to create position card
 function createPositionCard(position) {
@@ -301,19 +304,45 @@ function createMarketNotesPopup(marketData, context = 'tweet') {
   const popup = document.createElement('div');
   popup.className = 'market-notes-popup';
 
-  const headerControls = context === 'tweet' ? `
-    <div class="market-controls">
-      <button class="refresh-prices-btn" title="Refresh Live Prices">🔄</button>
-      <button class="switch-market-btn" title="Switch Market Type">➡️</button>
-      <button class="all-markets-btn" title="Market Info">ℹ️</button>
+  // Check if this is carousel data
+  const isCarousel = marketData.carousel && marketData.events && allEvents.length > 0;
+  const eventToDisplay = isCarousel ? currentEventData : marketData;
+
+  // Show carousel controls if we have multiple events or if we're in carousel mode
+  const carouselControls = (isCarousel || (allEvents && allEvents.length > 1)) ? `
+    <div class="event-carousel-controls">
+      <button class="event-nav-btn prev-event-btn" title="Previous Event">‹</button>
+      <span class="event-counter">${currentEventIndex + 1} / ${allEvents && allEvents.length > 0 ? allEvents.length : 1}</span>
+      <button class="event-nav-btn next-event-btn" title="Next Event">›</button>
     </div>
   ` : '';
 
+  // Always show carousel controls if we have multiple events available
+  let headerControls = '';
+  if (context === 'tweet') {
+    if (isCarousel || (allEvents && allEvents.length > 1)) {
+      // Show carousel controls
+      headerControls = '';  // Carousel controls are in carouselControls, not headerControls
+    } else {
+      // Show switch button only for single events
+      headerControls = `
+        <div class="market-controls">
+          <button class="switch-market-btn" title="Switch Market Type">➡️</button>
+        </div>
+      `;
+    }
+  }
+
   // Check if this is a multi-market event
-  if (marketData.type === 'multi') {
-    popup.innerHTML = createMultiMarketPopupHTML(marketData, headerControls);
+  if (eventToDisplay.type === 'multi') {
+    popup.innerHTML = createMultiMarketPopupHTML(eventToDisplay, headerControls, carouselControls);
   } else {
-    popup.innerHTML = createSingleMarketPopupHTML(marketData, headerControls);
+    popup.innerHTML = createSingleMarketPopupHTML(eventToDisplay, headerControls, carouselControls);
+  }
+
+  // Add carousel event listeners if this is carousel data
+  if (isCarousel) {
+    setupCarouselEventListeners(popup);
   }
 
   // Make popup draggable
@@ -323,15 +352,16 @@ function createMarketNotesPopup(marketData, context = 'tweet') {
 }
 
 // Function to create single market popup HTML
-function createSingleMarketPopupHTML(marketData, headerControls) {
+function createSingleMarketPopupHTML(marketData, headerControls, carouselControls = '') {
   return `
     <div class="market-notes-header draggable-header">
       <div class="header-left">
         <button class="close-popup">×</button>
-        <h3>Polymarket Trading</h3>
+        <h3>Market Notes</h3>
       </div>
       <div class="header-right">
         ${headerControls}
+        ${carouselControls}
       </div>
     </div>
     <div class="market-notes-content">
@@ -371,13 +401,14 @@ function createSingleMarketPopupHTML(marketData, headerControls) {
 
 
 // Function to create multi-market popup HTML
-function createMultiMarketPopupHTML(marketData, headerControls) {
+function createMultiMarketPopupHTML(marketData, headerControls, carouselControls = '') {
   const marketsHTML = marketData.markets.map((market, index) => {
     // No default selection - user must click to activate
     const candidateImage = market.image || market.icon || '';
 
     // Convert YES price to percentage (e.g., 0.81 -> 81%)
-    const oddsPercentage = Math.round(market.yes_price * 100);
+    const rawPercentage = market.yes_price * 100;
+    const oddsPercentage = rawPercentage < 1 && rawPercentage > 0 ? '<1' : Math.round(rawPercentage);
 
     return `
       <div class="multi-market-item" data-market-id="${market.id}">
@@ -402,10 +433,11 @@ function createMultiMarketPopupHTML(marketData, headerControls) {
     <div class="market-notes-header draggable-header">
       <div class="header-left">
         <button class="close-popup">×</button>
-        <h3>Polymarket Trading</h3>
+        <h3>Market Notes</h3>
       </div>
       <div class="header-right">
         ${headerControls}
+        ${carouselControls}
       </div>
     </div>
     <div class="market-notes-content">
@@ -426,6 +458,71 @@ function createMultiMarketPopupHTML(marketData, headerControls) {
   `;
 }
 
+// Function to setup carousel event listeners for event navigation
+function setupCarouselEventListeners(popup) {
+  const prevBtn = popup.querySelector('.prev-event-btn');
+  const nextBtn = popup.querySelector('.next-event-btn');
+
+  if (prevBtn && nextBtn) {
+    prevBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      navigateToEvent(-1);
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      navigateToEvent(1);
+    });
+  }
+}
+
+// Function to navigate between events in carousel
+function navigateToEvent(direction) {
+  if (allEvents.length === 0) return;
+
+  // Update index with wraparound
+  currentEventIndex = (currentEventIndex + direction + allEvents.length) % allEvents.length;
+  currentEventData = allEvents[currentEventIndex];
+
+  console.log('🎠 [DEBUG] Navigated to event', currentEventIndex + 1, 'of', allEvents.length);
+
+  // Update the popup content
+  updatePopupContent();
+}
+
+// Function to update popup content with new event
+function updatePopupContent() {
+  if (!marketNotesPopup || !currentEventData) return;
+
+  const carouselControls = `
+    <div class="event-carousel-controls">
+      <button class="event-nav-btn prev-event-btn" title="Previous Event">‹</button>
+      <span class="event-counter">${currentEventIndex + 1} / ${allEvents.length}</span>
+      <button class="event-nav-btn next-event-btn" title="Next Event">›</button>
+    </div>
+  `;
+
+  const headerControls = ``; // No header controls needed in carousel mode
+
+  // Generate new content based on event type
+  let newContent;
+  if (currentEventData.type === 'multi') {
+    newContent = createMultiMarketPopupHTML(currentEventData, headerControls, carouselControls);
+  } else {
+    newContent = createSingleMarketPopupHTML(currentEventData, headerControls, carouselControls);
+  }
+
+  // Update popup content
+  marketNotesPopup.innerHTML = newContent;
+
+  // Re-setup all event listeners
+  setupCarouselEventListeners(marketNotesPopup);
+  setupMarketNotesHandlers();
+  makeDraggable(marketNotesPopup);
+}
+
 // Function to make popup draggable
 function makeDraggable(popup) {
   const header = popup.querySelector('.draggable-header');
@@ -434,10 +531,13 @@ function makeDraggable(popup) {
 
   header.addEventListener('mousedown', (e) => {
     // Don't start drag if clicking on close button or any button in header
-    if (e.target.classList.contains('close-popup') || 
+    if (e.target.classList.contains('close-popup') ||
         e.target.classList.contains('switch-market-btn') ||
         e.target.classList.contains('refresh-prices-btn') ||
-        e.target.classList.contains('all-markets-btn')) return;
+        e.target.classList.contains('all-markets-btn') ||
+        e.target.classList.contains('event-nav-btn') ||
+        e.target.classList.contains('prev-event-btn') ||
+        e.target.classList.contains('next-event-btn')) return;
 
     isDragging = true;
     const rect = popup.getBoundingClientRect();
@@ -484,8 +584,16 @@ let currentMarketType = 'multi'; // Start with multi-market by default
 async function switchMarketType() {
   console.log('🔄 [DEBUG] Current market type:', currentMarketType);
 
-  // Toggle market type
-  const newMarketType = currentMarketType === 'multi' ? 'single' : 'multi';
+  // Cycle through market types: single -> multi -> carousel -> single
+  let newMarketType;
+  if (currentMarketType === 'single') {
+    newMarketType = 'multi';
+  } else if (currentMarketType === 'multi') {
+    newMarketType = 'carousel';
+  } else {
+    newMarketType = 'single';
+  }
+
   currentMarketType = newMarketType;
 
   console.log('🔄 [DEBUG] Switching to:', newMarketType);
@@ -525,7 +633,7 @@ async function fetchMarketData() {
   return fetchMarketDataWithType(currentMarketType);
 }
 
-// Enhanced function to fetch specific market type
+// Enhanced function to fetch specific market type or all events for carousel
 async function fetchMarketDataWithType(marketType) {
   console.log('🔍 [DEBUG] Starting fetchMarketData via Chrome messaging...');
 
@@ -544,7 +652,18 @@ async function fetchMarketDataWithType(marketType) {
 
       if (response && response.success && response.data) {
         console.log('✅ [DEBUG] Successfully got market data!');
-        resolve(response.data);
+
+        // Check if this is carousel data
+        if (response.data.carousel && response.data.events) {
+          console.log('🎠 [DEBUG] Received carousel data with', response.data.events.length, 'events');
+          allEvents = response.data.events;
+          currentEventIndex = 0;
+          currentEventData = allEvents[0];
+          resolve(response.data);
+        } else {
+          // Single event data
+          resolve(response.data);
+        }
       } else {
         console.error('❌ [DEBUG] Background script failed:', response?.error);
         resolve(null);
@@ -735,6 +854,9 @@ function setupSingleMarketHandlers() {
       refreshPricesBtn.innerHTML = '🔄';
     });
   }
+
+  // Setup trading handlers for single market (YES/NO buttons, payout calculation, etc.)
+  setupTradingHandlers();
 }
 
 function updateSingleMarketPrices(prices) {
@@ -755,7 +877,8 @@ function updateMultiMarketPrices(prices) {
       // Update the probability percentage in the collapsed view
       const probabilityEl = marketItem.querySelector('.probability-percentage');
       if (probabilityEl) {
-        const oddsPercentage = Math.round(marketPrice.yes_price * 100);
+        const rawPercentage = marketPrice.yes_price * 100;
+        const oddsPercentage = rawPercentage < 1 && rawPercentage > 0 ? '<1' : Math.round(rawPercentage);
         probabilityEl.textContent = `${oddsPercentage}%`;
       }
 
@@ -1253,9 +1376,21 @@ function injectPolymarketButtons() {
       actualButton.innerHTML = '<div style="color: rgb(139, 152, 165);">⏳</div>';
       actualButton.disabled = true;
 
-      // Fetch real market data from samplein.json via backend
-      console.log('🔍 [DEBUG] Starting to fetch market data...');
-      let marketData = await fetchMarketData();
+      // First, always try to fetch carousel data to see how many events we have
+      console.log('🔍 [DEBUG] Checking for available events...');
+      let carouselData = await fetchMarketDataWithType('carousel');
+      let marketData;
+
+      if (carouselData && carouselData.events && carouselData.events.length > 1) {
+        // We have multiple events, use carousel mode from start
+        console.log('🎠 [DEBUG] Found multiple events, starting in carousel mode');
+        currentMarketType = 'carousel';
+        marketData = carouselData;
+      } else {
+        // Single event, fetch based on current market type
+        console.log('🔍 [DEBUG] Single event available, fetching normal market data...');
+        marketData = await fetchMarketData();
+      }
 
       if (!marketData) {
         console.error('❌ [DEBUG] No market data received - showing error');

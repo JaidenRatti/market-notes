@@ -137,15 +137,81 @@ def load_market_data():
     # Fall back to single market
     return load_single_market_data()
 
+def load_all_events():
+    """Load all available events for carousel display"""
+    events = []
+
+    # Load multi-market event
+    multi_data = load_multi_market_data()
+    if multi_data:
+        events.append(multi_data)
+
+    # Load single market event
+    single_data = load_single_market_data()
+    if single_data:
+        events.append(single_data)
+
+    # For testing, duplicate the events to simulate multiple events
+    if len(events) > 0:
+        # Create variations for testing carousel
+        test_events = []
+        for i, event in enumerate(events):
+            for j in range(3):  # Create 3 copies of each event type
+                test_event = event.copy()
+                if test_event['type'] == 'multi':
+                    test_event['title'] = f"{test_event['title']} (Event {i*3 + j + 1})"
+                    test_event['event_id'] = f"{test_event['event_id']}_{j}"
+                else:
+                    test_event['title'] = f"{test_event['title']} (Event {i*3 + j + 1})"
+                    test_event['question'] = f"{test_event['question']} (Event {i*3 + j + 1})"
+                test_events.append(test_event)
+        events = test_events
+
+    return {
+        'events': events,
+        'total_count': len(events),
+        'carousel': True
+    }
+
 @app.route('/api/market', methods=['GET'])
 def get_market():
     """Get market data"""
     try:
-        market_data = load_market_data()
+        # Check if requesting carousel data
+        carousel_mode = request.args.get('carousel', 'false').lower() == 'true'
+        event_index = request.args.get('event_index', 0, type=int)
+
+        if carousel_mode:
+            # Return all events for carousel
+            all_events = load_all_events()
+            return jsonify({
+                'success': True,
+                'data': all_events
+            })
+        else:
+            # Return single market data (backwards compatibility)
+            market_data = load_market_data()
+            return jsonify({
+                'success': True,
+                'market': market_data
+            })
+    except Exception as e:
         return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/events', methods=['GET'])
+def get_all_events():
+    """Get all events for carousel display"""
+    try:
+        all_events = load_all_events()
+        # Return the carousel data directly in the success response
+        response = {
             'success': True,
-            'market': market_data
-        })
+            **all_events  # Spread the carousel data at root level
+        }
+        return jsonify(response)
     except Exception as e:
         return jsonify({
             'success': False,

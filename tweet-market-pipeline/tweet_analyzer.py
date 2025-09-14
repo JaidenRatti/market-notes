@@ -34,8 +34,32 @@ def analyze_tweet(tweet_text: str, author: str = None, top_n: int = 5, save_to_f
         # Process the tweet through the complete pipeline
         result = process_tweet_with_ranking_sync(tweet_text, author, top_n)
         
-        # Display summary
-        if "top_relevant_markets" in result:
+        # Display summary (handle new filtered API response format)
+        if "events" in result and result["events"]:
+            events = result["events"]
+            metadata = result.get("_analysis_metadata", {})
+            search_query = metadata.get("search_query", "Unknown")
+            sentiment_score = metadata.get("sentiment_score", 0)
+            
+            print(f"✅ Generated search query: '{search_query}'")
+            print(f"📊 Sentiment score: {sentiment_score}")
+            print(f"🎯 Top {len(events)} most relevant markets (after AI ranking):")
+            print()
+            
+            for event in events:
+                ai_ranking = event.get("_ai_ranking", {})
+                rank = ai_ranking.get("rank", "?")
+                title = event.get("title", "No title")
+                score = ai_ranking.get("relevance_score", 0)
+                explanation = ai_ranking.get("relevance_explanation", "No explanation")
+                
+                print(f"#{rank}. {title}")
+                print(f"    Score: {score:.2f}/1.0")
+                print(f"    Why: {explanation}")
+                print()
+        
+        # Fallback for old format (backward compatibility)
+        elif "top_relevant_markets" in result:
             markets = result["top_relevant_markets"]
             search_query = result["sentiment_analysis"]["search_query"]
             sentiment_score = result["sentiment_analysis"]["sentiment_score"]

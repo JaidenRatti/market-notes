@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from .sentiment_extractor import analyze_tweet_sentiment
 from .polymarket_client import PolymarketClient
-from .market_ranker import MarketRelevanceRanker, format_top_markets_json
+from .market_ranker import MarketRelevanceRanker, filter_original_polymarket_response
 
 class EnhancedTweetMarketPipeline:
     """Complete AI-powered pipeline from tweet to ranked markets"""
@@ -91,15 +91,16 @@ class EnhancedTweetMarketPipeline:
         )
         print()
         
-        # Step 4: Format Final Results
-        print("📋 Step 4: Formatting results...")
-        final_result = format_top_markets_json(
+        # Step 4: Filter original API-like results to only include top relevant events
+        print("📋 Step 4: Filtering original results to top relevant events...")
+        final_result = filter_original_polymarket_response(
+            original_market_results=market_results,
+            top_markets=top_markets,
             tweet_text=tweet_text,
-            sentiment_analysis=sentiment_analysis,
-            top_markets=top_markets
+            sentiment_analysis=sentiment_analysis
         )
         
-        print(f"✅ Pipeline complete! Returning top {len(top_markets)} most relevant markets")
+        print(f"✅ Pipeline complete! Returning filtered original API response with top {len(top_markets)} events")
         print()
         
         return final_result

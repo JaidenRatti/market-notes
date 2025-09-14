@@ -322,6 +322,77 @@ def format_top_markets_json(
     
     return result
 
+def filter_original_polymarket_response(
+    original_market_results: List[Dict[str, Any]],
+    top_markets: List[MarketRelevanceScore],
+    tweet_text: str,
+    sentiment_analysis: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Filter the original Polymarket API response to only include top relevant events
+    
+    Args:
+        original_market_results: Original list of markets from Polymarket API
+        top_markets: Top ranked markets from AI analysis
+        tweet_text: Original tweet text
+        sentiment_analysis: Sentiment analysis results
+        
+    Returns:
+        Filtered Polymarket API response with only top relevant events
+    """
+    
+    # Get the IDs of top markets for filtering
+    top_market_ids = {market.market_id for market in top_markets}
+    
+    # Filter the original results to only include top relevant markets
+    filtered_events = []
+    
+    for market_data in original_market_results:
+        market_id = market_data.get("id", "")
+        
+        # Only include markets that were ranked in top results
+        if market_id in top_market_ids:
+            # Find the corresponding ranking info
+            ranking_info = next((m for m in top_markets if m.market_id == market_id), None)
+            
+            if ranking_info:
+                # Add ranking metadata to the original market data
+                enhanced_market = market_data.copy()
+                enhanced_market["_ai_ranking"] = {
+                    "rank": next(i for i, m in enumerate(top_markets, 1) if m.market_id == market_id),
+                    "relevance_score": ranking_info.relevance_score,
+                    "relevance_explanation": ranking_info.relevance_explanation,
+                    "key_matches": ranking_info.key_matches
+                }
+                
+                filtered_events.append(enhanced_market)
+    
+    # Sort by AI ranking
+    filtered_events.sort(key=lambda x: x.get("_ai_ranking", {}).get("rank", 999))
+    
+    # Create the filtered Polymarket API response structure
+    filtered_response = {
+        "events": filtered_events,
+        "tags": [],  # Could be populated if we had the original full response
+        "profiles": [],  # Could be populated if we had the original full response
+        "pagination": {
+            "hasMore": False,
+            "totalResults": len(filtered_events)
+        },
+        "_analysis_metadata": {
+            "original_tweet": tweet_text,
+            "search_query": sentiment_analysis.get("search_query", ""),
+            "key_topics": sentiment_analysis.get("key_topics", []),
+            "sentiment_score": sentiment_analysis.get("sentiment_score", 0),
+            "total_original_markets": len(original_market_results),
+            "filtered_to_top_markets": len(filtered_events),
+            "filtering_method": "AI relevance ranking with Cohere",
+            "timestamp": "2025-09-14T08:51:05Z"
+        }
+    }
+    
+    return filtered_response
+
 # Test function
 async def test_market_ranking():
     """Test the market ranking functionality"""

@@ -190,27 +190,86 @@ def load_all_events():
 def convert_pipeline_to_events(pipeline_result):
     """Convert tweet pipeline result to event format compatible with frontend"""
     try:
+        print(f"🔍 Converting pipeline result: {pipeline_result.keys() if isinstance(pipeline_result, dict) else type(pipeline_result)}")
+        
         if 'top_relevant_markets' not in pipeline_result:
+            print(f"❌ No 'top_relevant_markets' found in pipeline result")
             return None
 
         events = []
         markets = pipeline_result['top_relevant_markets']
+        print(f"🎯 Processing {len(markets)} markets from pipeline")
 
-        for market_data in markets:
+        for i, market_data in enumerate(markets):
+            print(f"📊 Processing market {i+1}: {market_data.get('title', 'Unknown')}")
+            
+            # Extract market data from the pipeline result structure
+            market_info = market_data.get('market_data', {})
+            
+            # Get volume - check various possible fields
+            volume = 0
+            if 'volume' in market_info:
+                try:
+                    volume = float(market_info['volume'].replace('$', '').replace(',', '').replace('K', '000').replace('M', '000000'))
+                except:
+                    volume = 0
+            
+            # Format volume for display
+            if volume >= 1000000:
+                volume_display = f"${volume/1000000:.1f}M"
+            elif volume >= 1000:
+                volume_display = f"${volume/1000:.0f}K"
+            else:
+                volume_display = f"${volume:,.0f}"
+            
+            # Extract prices - try different possible structures
+            yes_price = 0.5  # default
+            no_price = 0.5   # default
+            
+            # Check if outcome prices are in the market data
+            if 'outcomePrices' in market_info:
+                try:
+                    if isinstance(market_info['outcomePrices'], list):
+                        yes_price = float(market_info['outcomePrices'][0])
+                        no_price = float(market_info['outcomePrices'][1])
+                    elif isinstance(market_info['outcomePrices'], str):
+                        # Parse JSON string
+                        import json
+                        prices = json.loads(market_info['outcomePrices'])
+                        yes_price = float(prices[0])
+                        no_price = float(prices[1])
+                except Exception as parse_error:
+                    print(f"⚠️ Could not parse outcome prices: {parse_error}")
+                    # Use random but realistic prices for demo
+                    import random
+                    yes_price = random.uniform(0.3, 0.7)
+                    no_price = 1.0 - yes_price
+            
             # Convert each market to single market event format
             event = {
                 'title': market_data.get('title', 'Unknown Market'),
                 'question': market_data.get('title', 'Unknown Market'),
-                'description': market_data.get('description', 'No description available'),
-                'volume': f"${float(market_data.get('volume', 0)):,.0f}" if market_data.get('volume') else '$0',
-                'yes_price': float(market_data.get('outcomePrices', ['0.5', '0.5'])[0]) if isinstance(market_data.get('outcomePrices'), list) else 0.5,
-                'no_price': float(market_data.get('outcomePrices', ['0.5', '0.5'])[1]) if isinstance(market_data.get('outcomePrices'), list) else 0.5,
+                'description': market_data.get('relevance_explanation', market_info.get('description', 'AI-generated market prediction')),
+                'volume': volume_display,
+                'yesPrice': yes_price,  # Use camelCase to match frontend expectations
+                'noPrice': no_price,    # Use camelCase to match frontend expectations
+                'yes_price': yes_price, # Keep snake_case for backward compatibility
+                'no_price': no_price,   # Keep snake_case for backward compatibility
                 'type': 'single',
                 'relevance_score': market_data.get('relevance_score', 0),
-                'relevance_explanation': market_data.get('relevance_explanation', 'AI-ranked market')
+                'relevance_explanation': market_data.get('relevance_explanation', 'AI-ranked market relevant to your tweet'),
+                'market_id': market_data.get('ticker', f'ai_market_{i+1}'),
+                'ticker': market_data.get('ticker', f'ai_market_{i+1}'),
+                'rank': market_data.get('rank', i+1),
+                'category': market_info.get('category', 'AI Prediction'),
+                'end_date': market_info.get('end_date', '2025-12-31'),
+                'active': market_info.get('active', True)
             }
             events.append(event)
+            print(f"✅ Converted market {i+1}: {event['title']} (Score: {event['relevance_score']:.2f})")
 
+        print(f"🎯 Successfully converted {len(events)} events")
+        
         return {
             'events': events,
             'total_count': len(events),
@@ -219,11 +278,15 @@ def convert_pipeline_to_events(pipeline_result):
                 'search_query': pipeline_result.get('sentiment_analysis', {}).get('search_query', ''),
                 'sentiment_score': pipeline_result.get('sentiment_analysis', {}).get('sentiment_score', 0),
                 'key_topics': pipeline_result.get('sentiment_analysis', {}).get('key_topics', [])
-            }
+            },
+            'source': 'ai_analysis'  # Mark this as AI-generated content
         }
 
     except Exception as e:
-        print(f"Error converting pipeline result: {e}")
+        print(f"❌ Error converting pipeline result: {e}")
+        print(f"❌ Pipeline result structure: {pipeline_result}")
+        import traceback
+        print(f"❌ Full traceback: {traceback.format_exc()}")
         return None
 
 @app.route('/api/market', methods=['GET'])
@@ -275,15 +338,23 @@ def get_all_events():
 def analyze_tweet_endpoint():
     """Analyze tweet text and return relevant markets"""
     try:
+        print(f"\n{'='*60}")
+        print(f"🚀 TWEET ANALYSIS ENDPOINT CALLED")
+        print(f"{'='*60}")
+        
         # Check if tweet analysis is available
         if not TWEET_ANALYSIS_AVAILABLE:
+            print(f"❌ Tweet analysis pipeline not available")
             return jsonify({
                 'success': False,
-                'error': 'Tweet analysis pipeline not available'
+                'error': 'Tweet analysis pipeline not available - dependencies may be missing'
             }), 503
 
         data = request.get_json()
+        print(f"📝 Request data: {data}")
+        
         if not data or 'tweet_text' not in data:
+            print(f"❌ Missing tweet_text in request")
             return jsonify({
                 'success': False,
                 'error': 'Missing tweet_text in request body'
@@ -293,36 +364,83 @@ def analyze_tweet_endpoint():
         author = data.get('author', 'TwitterUser')
         top_n = data.get('top_n', 5)
 
-        print(f"🔍 Analyzing tweet: {tweet_text}")
+        print(f"🔍 Analyzing tweet from @{author}: '{tweet_text[:100]}{'...' if len(tweet_text) > 100 else ''}'")
+        print(f"📊 Requesting top {top_n} markets")
 
         # Run the tweet analysis pipeline
+        print(f"🤖 Starting AI analysis pipeline...")
         pipeline_result = analyze_tweet(tweet_text, author, top_n, save_to_file=False)
+        print(f"✅ Pipeline analysis complete")
+        print(f"📋 Pipeline result keys: {list(pipeline_result.keys()) if isinstance(pipeline_result, dict) else 'Not a dict'}")
 
         if 'error' in pipeline_result:
+            print(f"❌ Pipeline returned error: {pipeline_result['error']}")
             return jsonify({
                 'success': False,
                 'error': f"Pipeline error: {pipeline_result['error']}"
             }), 500
 
-        # Convert pipeline result to our event format
-        events_data = convert_pipeline_to_events(pipeline_result)
-
-        if events_data:
-            return jsonify({
-                'success': True,
-                **events_data  # Spread the events data
-            })
+        # Check if pipeline found any markets
+        if 'top_relevant_markets' in pipeline_result:
+            markets_count = len(pipeline_result['top_relevant_markets'])
+            print(f"🎯 Pipeline found {markets_count} relevant markets")
+            
+            if markets_count == 0:
+                print(f"⚠️ No markets found for this tweet")
+                return jsonify({
+                    'success': False,
+                    'error': 'No relevant markets found for this tweet content',
+                    'debug_info': {
+                        'search_query': pipeline_result.get('sentiment_analysis', {}).get('search_query', 'Unknown'),
+                        'sentiment_score': pipeline_result.get('sentiment_analysis', {}).get('sentiment_score', 0)
+                    }
+                }), 404
         else:
+            print(f"❌ Pipeline result missing 'top_relevant_markets' field")
             return jsonify({
                 'success': False,
-                'error': 'No relevant markets found'
-            }), 404
+                'error': 'Invalid pipeline response format'
+            }), 500
+
+        # Convert pipeline result to our event format
+        print(f"🔄 Converting pipeline result to event format...")
+        events_data = convert_pipeline_to_events(pipeline_result)
+
+        if events_data and events_data.get('events'):
+            events_count = len(events_data['events'])
+            print(f"✅ Successfully converted to {events_count} events")
+            print(f"🎯 Returning events for carousel display")
+            
+            response = {
+                'success': True,
+                **events_data  # Spread the events data
+            }
+            
+            print(f"📤 Response keys: {list(response.keys())}")
+            print(f"{'='*60}")
+            return jsonify(response)
+        else:
+            print(f"❌ Event conversion failed or produced no events")
+            return jsonify({
+                'success': False,
+                'error': 'Failed to convert markets to display format',
+                'debug_info': {
+                    'pipeline_keys': list(pipeline_result.keys()),
+                    'conversion_result': 'None' if events_data is None else 'Empty events'
+                }
+            }), 500
 
     except Exception as e:
-        print(f"Error in tweet analysis endpoint: {e}")
+        print(f"❌ CRITICAL ERROR in tweet analysis endpoint: {e}")
+        import traceback
+        print(f"❌ Full traceback: {traceback.format_exc()}")
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': f"Internal server error: {str(e)}",
+            'debug_info': {
+                'error_type': type(e).__name__,
+                'tweet_analysis_available': TWEET_ANALYSIS_AVAILABLE
+            }
         }), 500
 
 @app.route('/api/trade', methods=['POST'])

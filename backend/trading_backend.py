@@ -2,6 +2,7 @@
 
 import json
 import os
+import sys
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -9,7 +10,20 @@ from py_clob_client.client import ClobClient
 from py_clob_client.clob_types import MarketOrderArgs, OrderType
 from py_clob_client.order_builder.constants import BUY, SELL
 
+# Add tweet-market-pipeline to path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'tweet-market-pipeline'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'tweet-market-pipeline', 'include'))
+
 load_dotenv()
+
+# Import tweet analyzer (add error handling for missing dependencies)
+try:
+    from tweet_analyzer import analyze_tweet
+    TWEET_ANALYSIS_AVAILABLE = True
+    print("✅ Tweet analysis pipeline loaded successfully")
+except ImportError as e:
+    print(f"⚠️ Tweet analysis pipeline not available: {e}")
+    TWEET_ANALYSIS_AVAILABLE = False
 
 app = Flask(__name__)
 CORS(app, resources={
@@ -173,6 +187,45 @@ def load_all_events():
         'carousel': True
     }
 
+def convert_pipeline_to_events(pipeline_result):
+    """Convert tweet pipeline result to event format compatible with frontend"""
+    try:
+        if 'top_relevant_markets' not in pipeline_result:
+            return None
+
+        events = []
+        markets = pipeline_result['top_relevant_markets']
+
+        for market_data in markets:
+            # Convert each market to single market event format
+            event = {
+                'title': market_data.get('title', 'Unknown Market'),
+                'question': market_data.get('title', 'Unknown Market'),
+                'description': market_data.get('description', 'No description available'),
+                'volume': f"${float(market_data.get('volume', 0)):,.0f}" if market_data.get('volume') else '$0',
+                'yes_price': float(market_data.get('outcomePrices', ['0.5', '0.5'])[0]) if isinstance(market_data.get('outcomePrices'), list) else 0.5,
+                'no_price': float(market_data.get('outcomePrices', ['0.5', '0.5'])[1]) if isinstance(market_data.get('outcomePrices'), list) else 0.5,
+                'type': 'single',
+                'relevance_score': market_data.get('relevance_score', 0),
+                'relevance_explanation': market_data.get('relevance_explanation', 'AI-ranked market')
+            }
+            events.append(event)
+
+        return {
+            'events': events,
+            'total_count': len(events),
+            'carousel': True,
+            'tweet_analysis': {
+                'search_query': pipeline_result.get('sentiment_analysis', {}).get('search_query', ''),
+                'sentiment_score': pipeline_result.get('sentiment_analysis', {}).get('sentiment_score', 0),
+                'key_topics': pipeline_result.get('sentiment_analysis', {}).get('key_topics', [])
+            }
+        }
+
+    except Exception as e:
+        print(f"Error converting pipeline result: {e}")
+        return None
+
 @app.route('/api/market', methods=['GET'])
 def get_market():
     """Get market data"""
@@ -213,6 +266,60 @@ def get_all_events():
         }
         return jsonify(response)
     except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/analyze-tweet', methods=['POST'])
+def analyze_tweet_endpoint():
+    """Analyze tweet text and return relevant markets"""
+    try:
+        # Check if tweet analysis is available
+        if not TWEET_ANALYSIS_AVAILABLE:
+            return jsonify({
+                'success': False,
+                'error': 'Tweet analysis pipeline not available'
+            }), 503
+
+        data = request.get_json()
+        if not data or 'tweet_text' not in data:
+            return jsonify({
+                'success': False,
+                'error': 'Missing tweet_text in request body'
+            }), 400
+
+        tweet_text = data['tweet_text']
+        author = data.get('author', 'TwitterUser')
+        top_n = data.get('top_n', 5)
+
+        print(f"🔍 Analyzing tweet: {tweet_text}")
+
+        # Run the tweet analysis pipeline
+        pipeline_result = analyze_tweet(tweet_text, author, top_n, save_to_file=False)
+
+        if 'error' in pipeline_result:
+            return jsonify({
+                'success': False,
+                'error': f"Pipeline error: {pipeline_result['error']}"
+            }), 500
+
+        # Convert pipeline result to our event format
+        events_data = convert_pipeline_to_events(pipeline_result)
+
+        if events_data:
+            return jsonify({
+                'success': True,
+                **events_data  # Spread the events data
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'No relevant markets found'
+            }), 404
+
+    except Exception as e:
+        print(f"Error in tweet analysis endpoint: {e}")
         return jsonify({
             'success': False,
             'error': str(e)

@@ -28,11 +28,18 @@ polymarket-trading-extension/
 
 ## 🚀 Features
 
+### AI-Powered Tweet Analysis 🧠
+- **Smart Market Discovery**: Automatically analyzes tweet content to find relevant Polymarket events
+- **Cohere AI Integration**: Uses advanced NLP to understand tweet context and sentiment
+- **Polymarket Search**: Searches live Polymarket API for active, tradeable markets
+- **Relevance Ranking**: AI ranks markets by relevance to the specific tweet content
+- **Fallback Support**: Falls back to sample data if tweet analysis fails
+
 ### Market Event Carousel
-- **Multiple Events**: Navigate through different Polymarket events using ← → arrows
+- **AI-Generated Events**: Shows AI-discovered markets relevant to the tweet
+- **Navigation Controls**: Use ← → arrows to browse through discovered markets
 - **Event Counter**: Shows current position (e.g., "3 / 6" events)
 - **Mixed Market Types**: Supports both single-market and multi-candidate events
-- **Automatic Detection**: Starts in carousel mode when multiple events available
 
 ### Market Trading Interface
 - **YES/NO Trading**: Click buttons to select position and see real-time pricing
@@ -63,9 +70,17 @@ polymarket-trading-extension/
 ### 2. Configure Environment
 Create `.env` file in project root:
 ```env
+# Required for trading
 magickey=your_magic_wallet_private_key
 funder=your_polymarket_wallet_address
+
+# Required for AI tweet analysis
+COHERE_API_KEY=your_cohere_api_key
 ```
+
+Get API keys:
+- **Magic wallet keys**: From your Polymarket account settings
+- **Cohere API key**: From [Cohere Dashboard](https://dashboard.cohere.com/api-keys)
 
 ### 3. Install Chrome Extension
 1. Open Chrome → Extensions → Developer mode
@@ -88,19 +103,22 @@ funder=your_polymarket_wallet_address
 
 ### Data Flow
 ```
-Twitter Page → Content Script → Background Script → Flask API → Polymarket API
-                     ↓
-              Trading Interface with Real-time Updates
+Twitter Page → Extract Tweet Text → AI Analysis Pipeline → Relevant Markets
+     ↓              ↓                       ↓                    ↓
+Content Script → Background Script → Flask API → Cohere + Polymarket APIs
+     ↓
+Trading Interface with AI-Discovered Markets
 ```
 
 ## 🎯 Usage
 
-### Market Trading
+### AI-Powered Market Trading
 1. Open X (Twitter) in Chrome
 2. Look for Polymarket icon next to other tweet buttons
-3. Click to open trading interface
-4. Use ← → arrows to navigate between events
-5. Click YES/NO, enter amount, execute trades
+3. Click button on any tweet - AI will analyze the content
+4. View AI-discovered markets relevant to the tweet
+5. Use ← → arrows to navigate between discovered events
+6. Click YES/NO, enter amount, execute trades on relevant markets
 
 ### Position Viewing
 1. Visit any Twitter profile page
@@ -136,18 +154,22 @@ Twitter Page → Content Script → Background Script → Flask API → Polymark
 ### Backend API Endpoints
 - `GET /api/market` - Single market data
 - `GET /api/events` - Multiple events for carousel
+- `POST /api/analyze-tweet` - **NEW**: AI-powered tweet analysis
 - `GET /api/positions` - User's open positions
 - `GET /api/closed-positions` - User's closed positions
 - `POST /api/trade` - Execute trades
 
 ## 📈 Recent Updates
 
-- **Event Carousel System**: Navigate between multiple markets
+- **🧠 AI-Powered Tweet Analysis**: Automatically discovers relevant markets for any tweet
+- **🤖 Cohere Integration**: Advanced NLP for tweet sentiment and context analysis
+- **🔍 Smart Market Search**: Live Polymarket API search with AI relevance ranking
+- **🎯 Context-Aware Trading**: Show only markets relevant to the specific tweet
+- **📊 Pipeline Integration**: Complete tweet-to-market analysis pipeline
 - **Position API Integration**: Real position data from Polymarket
 - **UI/UX Improvements**: Better button highlighting, profit calculations
 - **Code Cleanup**: Organized file structure, removed test files
-- **Multi-market Support**: Candidate cards with images and percentages
 
 ---
 
-Built with Flask, Chrome Extensions API, and Polymarket CLOB API
+Built with Flask, Chrome Extensions API, Polymarket CLOB API, and Cohere AI

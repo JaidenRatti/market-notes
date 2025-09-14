@@ -67,6 +67,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
     return true;
   }
+
+  if (request.action === 'analyzeTweet') {
+    analyzeTweetBackground(request.tweet_text, request.author)
+      .then(data => {
+        console.log('✅ [BACKGROUND] Tweet analysis complete:', data);
+        sendResponse({ success: true, data });
+      })
+      .catch(error => {
+        console.error('❌ [BACKGROUND] Tweet analysis error:', error);
+        sendResponse({ success: false, error: error.message });
+      });
+    return true;
+  }
 });
 
 async function fetchMarketDataBackground(marketType = 'single') {
@@ -249,4 +262,50 @@ async function fetchClosedPositionsBackground() {
 
   console.error('❌ [BACKGROUND] All closed positions URLs failed');
   throw new Error('All backend URLs failed');
+}
+
+async function analyzeTweetBackground(tweet_text, author = 'TwitterUser') {
+  const urls = ['http://127.0.0.1:5000/api/analyze-tweet', 'http://localhost:5000/api/analyze-tweet'];
+
+  for (const url of urls) {
+    try {
+      console.log(`🔍 [BACKGROUND] Analyzing tweet via ${url}`);
+      console.log(`📝 [BACKGROUND] Tweet: ${tweet_text}`);
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tweet_text: tweet_text,
+          author: author,
+          top_n: 5
+        })
+      });
+
+      console.log(`🔍 [BACKGROUND] Tweet analysis response status: ${response.status}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log(`🔍 [BACKGROUND] Got tweet analysis data:`, data);
+
+      if (data.success && data.events) {
+        console.log(`✅ [BACKGROUND] Success! Returning ${data.events.length} relevant markets`);
+        return data;
+      } else {
+        console.log(`❌ [BACKGROUND] Tweet analysis failed:`, data);
+        throw new Error(data.error || 'Tweet analysis failed');
+      }
+    } catch (error) {
+      console.error(`❌ [BACKGROUND] Failed ${url}:`, error.message);
+      console.error(`❌ [BACKGROUND] Full error:`, error);
+    }
+  }
+
+  console.error('❌ [BACKGROUND] All tweet analysis URLs failed');
+  throw new Error('Tweet analysis failed - backend not available');
 }

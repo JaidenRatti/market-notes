@@ -1,0 +1,960 @@
+[
+  {
+    "test_case": 1,
+    "category": "Economics",
+    "result": {
+      "original_tweet": {
+        "text": "Fed will definitely cut rates in 2025! Inflation is coming down fast 📉",
+        "timestamp": "2025-09-14T05:58:02Z"
+      },
+      "sentiment_analysis": {
+        "search_query": "Fed rates",
+        "key_topics": [
+          "Federal Reserve",
+          "inflation",
+          "interest rates",
+          "2025 prediction"
+        ],
+        "sentiment_score": 0.7,
+        "confidence": 0.8
+      },
+      "ranking_summary": {
+        "total_markets_analyzed": 5,
+        "top_markets_returned": 5,
+        "ranking_method": "AI-powered relevance scoring using Cohere"
+      },
+      "top_relevant_markets": [
+        {
+          "rank": 1,
+          "relevance_score": 0.9,
+          "relevance_explanation": "The prediction market has a high relevance to the original tweet. It directly addresses the subject matter of Federal Reserve rate cuts and inflation, and the market's question and description are specifically focused on the number of rate cuts in 2025.",
+          "key_matches": [
+            "Fed rate cuts",
+            "2025",
+            "inflation"
+          ],
+          "market_id": "16085",
+          "title": "How many Fed rate cuts in 2025?",
+          "description": "This is a market group over how many Fed rate cuts will happen in 2025.",
+          "slug": "how-many-fed-rate-cuts-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2025-12-31T12:00:00Z",
+          "volume_24hr": 49156.645352,
+          "liquidity": 1215519.02978,
+          "comment_count": 78,
+          "tags": [
+            "Fed Rates",
+            "Business",
+            "2025 Predictions",
+            "Economic Policy",
+            "Jerome Powell",
+            "Fed"
+          ],
+          "prediction_markets": [
+            {
+              "question": "Will no Fed rate cuts happen in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.01\", \"0.99\"]",
+              "volume": "3088281.717585",
+              "liquidity": "143822.29459",
+              "end_date": "2025-12-10T12:00:00Z"
+            },
+            {
+              "question": "Will 7 Fed rate cuts happen in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.0035\", \"0.9965\"]",
+              "volume": "1396159.685483",
+              "liquidity": "152052.14923",
+              "end_date": "2025-12-10T12:00:00Z"
+            },
+            {
+              "question": "Will 1 Fed rate cut happen in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.0385\", \"0.9615\"]",
+              "volume": "1863154.058929",
+              "liquidity": "233010.79977",
+              "end_date": "2025-12-10T12:00:00Z"
+            },
+            {
+              "question": "Will 2 Fed rate cuts happen in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.335\", \"0.665\"]",
+              "volume": "1574747.966811",
+              "liquidity": "60631.8224",
+              "end_date": "2025-12-10T12:00:00Z"
+            },
+            {
+              "question": "Will 6 Fed rate cuts happen in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.0125\", \"0.9875\"]",
+              "volume": "1482193.445084",
+              "liquidity": "168808.41724",
+              "end_date": "2025-12-10T12:00:00Z"
+            },
+            {
+              "question": "Will 3 Fed rate cuts happen in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.48\", \"0.52\"]",
+              "volume": "1693244.162635",
+              "liquidity": "56933.3569",
+              "end_date": "2025-12-10T12:00:00Z"
+            },
+            {
+              "question": "Will 4 Fed rate cuts happen in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.105\", \"0.895\"]",
+              "volume": "1977236.5193",
+              "liquidity": "68869.99191",
+              "end_date": "2025-12-10T12:00:00Z"
+            },
+            {
+              "question": "Will 5 Fed rate cuts happen in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.026\", \"0.974\"]",
+              "volume": "1461286.009208",
+              "liquidity": "163546.86078",
+              "end_date": "2025-12-10T12:00:00Z"
+            },
+            {
+              "question": "Will 8+ Fed rate cuts happen in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.0085\", \"0.9915\"]",
+              "volume": "1498344.285928",
+              "liquidity": "167843.33696",
+              "end_date": "2025-12-10T12:00:00Z"
+            }
+          ]
+        },
+        {
+          "rank": 2,
+          "relevance_score": 0.9,
+          "relevance_explanation": "The prediction market is highly relevant to the original tweet, as it directly addresses the possibility of a Fed rate cut in 2025, which is the main subject of the tweet.",
+          "key_matches": [
+            "Federal Reserve",
+            "interest rates",
+            "2025 prediction",
+            "inflation"
+          ],
+          "market_id": "16093",
+          "title": "Fed emergency rate cut in 2025?",
+          "description": "This market will resolve to \"Yes\" if the Federal Open Market Committee (FOMC) holds an emergency meeting after which the upper bound of the target federal funds rate is lowered between January 1 and December 31, 2025, 11:59 PM ET. Otherwise, this market will resolve to \"No\".\n\nAn emergency meeting is",
+          "slug": "fed-emergency-rate-cut-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2025-12-31T12:00:00Z",
+          "volume_24hr": 3.7,
+          "liquidity": 50829.1792,
+          "comment_count": 4,
+          "tags": [
+            "2025 Predictions",
+            "Business",
+            "Economy",
+            "Fed Rates",
+            "Economic Policy",
+            "Jerome Powell",
+            "Fed"
+          ],
+          "prediction_markets": [
+            {
+              "question": "Fed emergency rate cut in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.055\", \"0.945\"]",
+              "volume": "1007746.09259",
+              "liquidity": "50829.1792",
+              "end_date": "2025-12-31T12:00:00Z"
+            }
+          ]
+        },
+        {
+          "rank": 3,
+          "relevance_score": 0.8,
+          "relevance_explanation": "The prediction market has a high relevance to the original tweet. It directly addresses the topic of Fed rate changes in 2025, which is the main subject of the tweet.",
+          "key_matches": [
+            "Fed rates",
+            "2025 prediction",
+            "inflation"
+          ],
+          "market_id": "16084",
+          "title": "Fed rate hike in 2025?",
+          "description": "This market will resolve to “Yes” if the upper bound of the target federal funds rate is increased at any point between January 1, 2025 and the Fed's December 2025 meeting, currently scheduled for December 9-10. Otherwise, this market will resolve to “No”.\n\nThis market may not resolve to \"No\" until ",
+          "slug": "fed-rate-hike-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2025-12-10T12:00:00Z",
+          "volume_24hr": 5117.485153,
+          "liquidity": 69796.82897,
+          "comment_count": 17,
+          "tags": [
+            "Fed Rates",
+            "Business",
+            "2025 Predictions",
+            "Economic Policy",
+            "Jerome Powell",
+            "Fed"
+          ],
+          "prediction_markets": [
+            {
+              "question": "Fed rate hike in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.027\", \"0.973\"]",
+              "volume": "540980.201023",
+              "liquidity": "69796.82897",
+              "end_date": "2025-12-10T12:00:00Z"
+            }
+          ]
+        },
+        {
+          "rank": 4,
+          "relevance_score": 0.6,
+          "relevance_explanation": "The prediction market has moderate relevance to the original tweet. While the market directly relates to economic themes, it does not specifically address the Federal Reserve's actions or inflation, which are the main subjects of the tweet.",
+          "key_matches": [
+            "economic themes",
+            "2025 timeframe",
+            "potential impact on interest rates"
+          ],
+          "market_id": "16092",
+          "title": "US recession in 2025?",
+          "description": "This market will resolve to “Yes”, if either of the following conditions are met:\n\n1.  The National Bureau of Economic Research (NBER) publicly announces that a recession has occurred in the United States, at any point in 2025, with the announcement made by December 31, 2025, 11:59 PM ET.\n\n2.  The s",
+          "slug": "us-recession-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2026-02-28T12:00:00Z",
+          "volume_24hr": 11995.162768,
+          "liquidity": 95601.7638,
+          "comment_count": 798,
+          "tags": [
+            "Business",
+            "Economy",
+            "2025 Predictions",
+            "xtrd-1",
+            "Macro Graph",
+            "Economic Policy"
+          ],
+          "prediction_markets": [
+            {
+              "question": "US recession in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.095\", \"0.905\"]",
+              "volume": "9433714.393787",
+              "liquidity": "95601.7638",
+              "end_date": "2026-02-28T12:00:00Z"
+            }
+          ]
+        },
+        {
+          "rank": 5,
+          "relevance_score": 0.4,
+          "relevance_explanation": "The prediction market has low relevance to the original tweet. While both the tweet and the market refer to events that may occur in 2025, the specific topics and themes differ.",
+          "key_matches": [
+            "2025",
+            "inflation (implied by USDT depeg)"
+          ],
+          "market_id": "16099",
+          "title": "USDT depeg in 2025?",
+          "description": "This market will resolve to “Yes” immediately if all Coinbase 1 minute candles for USDT-USD for any 24 hour period are below 98 cents, for candles between 01 Jan '25 00:00 and 31 Dec '25 23:59 in the ET timezone. Otherwise, this market will resolve to “No”.\n\nBelow 98 cents means all candles in the p",
+          "slug": "usdt-depeg-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2025-12-31T12:00:00Z",
+          "volume_24hr": 89.66,
+          "liquidity": 59269.15623,
+          "comment_count": 19,
+          "tags": [
+            "Stablecoins",
+            "depeg",
+            "2025 Predictions",
+            "Crypto"
+          ],
+          "prediction_markets": [
+            {
+              "question": "USDT depeg in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.029\", \"0.971\"]",
+              "volume": "332388.352241",
+              "liquidity": "59269.15623",
+              "end_date": "2025-12-31T12:00:00Z"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "test_case": 2,
+    "category": "Cryptocurrency",
+    "result": {
+      "original_tweet": {
+        "text": "Bitcoin to $200K by end of 2025! Best crypto investment opportunity 🚀 #BTC",
+        "timestamp": "2025-09-14T05:58:02Z"
+      },
+      "sentiment_analysis": {
+        "search_query": "Bitcoin price",
+        "key_topics": [
+          "Bitcoin",
+          "Crypto",
+          "Investment",
+          "Financial Markets",
+          "Technology"
+        ],
+        "sentiment_score": 0.8,
+        "confidence": 0.8
+      },
+      "ranking_summary": {
+        "total_markets_analyzed": 5,
+        "top_markets_returned": 5,
+        "ranking_method": "AI-powered relevance scoring using Cohere"
+      },
+      "top_relevant_markets": [
+        {
+          "rank": 1,
+          "relevance_score": 0.8,
+          "relevance_explanation": "The prediction market has high relevance to the original tweet. It directly addresses Bitcoin's price prediction for 2025, which is the main subject of the tweet.",
+          "key_matches": [
+            "Bitcoin",
+            "Crypto",
+            "Price",
+            "2025"
+          ],
+          "market_id": "16096",
+          "title": "What price will Bitcoin hit in 2025?",
+          "description": "This is a market group over whit prices Bitcoin will hit in 2025.",
+          "slug": "what-price-will-bitcoin-hit-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2026-01-01T05:00:00Z",
+          "volume_24hr": 39697.202038,
+          "liquidity": 1073802.8793,
+          "comment_count": 5277,
+          "tags": [
+            "Crypto",
+            "Crypto Prices",
+            "Bitcoin",
+            "Hit Price",
+            "Yearly"
+          ],
+          "prediction_markets": [
+            {
+              "question": "Will Bitcoin reach $1,000,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.011\", \"0.989\"]",
+              "volume": "2186985.355696",
+              "liquidity": "132378.00033",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin reach $250,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.0255\", \"0.9745\"]",
+              "volume": "2952594.790788",
+              "liquidity": "199850.56179",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin reach $200,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.065\", \"0.935\"]",
+              "volume": "3916853.93174",
+              "liquidity": "214412.2041",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin reach $150,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.29\", \"0.71\"]",
+              "volume": "4456126.029488",
+              "liquidity": "106596.8897",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin reach $130,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.63\", \"0.37\"]",
+              "volume": "2533976.65908",
+              "liquidity": "86119.1531",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin reach $120,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"1\", \"0\"]",
+              "volume": "1924730.064437",
+              "liquidity": "",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin reach $110,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"1\", \"0\"]",
+              "volume": "1893687.489381",
+              "liquidity": "",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin reach $100,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"1\", \"0\"]",
+              "volume": "103063.899541",
+              "liquidity": "",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin dip to $50,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.0375\", \"0.9625\"]",
+              "volume": "1611722.736908",
+              "liquidity": "81567.32455",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin dip to $90,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"1\", \"0\"]",
+              "volume": "171499.230653",
+              "liquidity": "",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin dip to $80,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"1\", \"0\"]",
+              "volume": "236627.701211",
+              "liquidity": "",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin dip to $70,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.065\", \"0.935\"]",
+              "volume": "2433846.165708",
+              "liquidity": "77055.59",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin dip to $20,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.0195\", \"0.9805\"]",
+              "volume": "663588.50077",
+              "liquidity": "59617.84184",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Bitcoin reach $125,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.7765\", \"0.2235\"]",
+              "volume": "365796.818417",
+              "liquidity": "34256.13439",
+              "end_date": ""
+            },
+            {
+              "question": "Will Bitcoin reach $140,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.42\", \"0.58\"]",
+              "volume": "271429.245871",
+              "liquidity": "32908.3936",
+              "end_date": ""
+            },
+            {
+              "question": "Will Bitcoin reach $170,000 by December 31, 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.125\", \"0.875\"]",
+              "volume": "250278.607568",
+              "liquidity": "49040.7859",
+              "end_date": ""
+            }
+          ]
+        },
+        {
+          "rank": 2,
+          "relevance_score": 0.4,
+          "relevance_explanation": "The prediction market has a moderate connection to the original tweet. While both the tweet and the market touch on financial topics, they focus on different specific areas.",
+          "key_matches": [
+            "Financial Markets",
+            "2025"
+          ],
+          "market_id": "16084",
+          "title": "Fed rate hike in 2025?",
+          "description": "This market will resolve to “Yes” if the upper bound of the target federal funds rate is increased at any point between January 1, 2025 and the Fed's December 2025 meeting, currently scheduled for December 9-10. Otherwise, this market will resolve to “No”.\n\nThis market may not resolve to \"No\" until ",
+          "slug": "fed-rate-hike-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2025-12-10T12:00:00Z",
+          "volume_24hr": 5117.485153,
+          "liquidity": 69796.82897,
+          "comment_count": 17,
+          "tags": [
+            "Fed Rates",
+            "Business",
+            "2025 Predictions",
+            "Economic Policy",
+            "Jerome Powell",
+            "Fed"
+          ],
+          "prediction_markets": [
+            {
+              "question": "Fed rate hike in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.027\", \"0.973\"]",
+              "volume": "540980.201023",
+              "liquidity": "69796.82897",
+              "end_date": "2025-12-10T12:00:00Z"
+            }
+          ]
+        },
+        {
+          "rank": 3,
+          "relevance_score": 0.4,
+          "relevance_explanation": "The prediction market has a moderate connection to the original tweet. While both discuss economic events, the market focuses on the US recession, which only indirectly relates to Bitcoin's performance.",
+          "key_matches": [
+            "Economic_events",
+            "Investment_implications",
+            "Timeframe(2025)"
+          ],
+          "market_id": "16092",
+          "title": "US recession in 2025?",
+          "description": "This market will resolve to “Yes”, if either of the following conditions are met:\n\n1.  The National Bureau of Economic Research (NBER) publicly announces that a recession has occurred in the United States, at any point in 2025, with the announcement made by December 31, 2025, 11:59 PM ET.\n\n2.  The s",
+          "slug": "us-recession-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2026-02-28T12:00:00Z",
+          "volume_24hr": 11995.162768,
+          "liquidity": 95601.7638,
+          "comment_count": 798,
+          "tags": [
+            "Business",
+            "Economy",
+            "2025 Predictions",
+            "xtrd-1",
+            "Macro Graph",
+            "Economic Policy"
+          ],
+          "prediction_markets": [
+            {
+              "question": "US recession in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.095\", \"0.905\"]",
+              "volume": "9433714.393787",
+              "liquidity": "95601.7638",
+              "end_date": "2026-02-28T12:00:00Z"
+            }
+          ]
+        },
+        {
+          "rank": 4,
+          "relevance_score": 0.4,
+          "relevance_explanation": "The prediction market has a moderate connection to the original tweet's topic of Bitcoin's price prediction. While both the tweet and the market touch on broader economic themes, they do not directly align in their specific focus.",
+          "key_matches": [
+            "Economic",
+            "Investment",
+            "Financial Markets"
+          ],
+          "market_id": "16093",
+          "title": "Fed emergency rate cut in 2025?",
+          "description": "This market will resolve to \"Yes\" if the Federal Open Market Committee (FOMC) holds an emergency meeting after which the upper bound of the target federal funds rate is lowered between January 1 and December 31, 2025, 11:59 PM ET. Otherwise, this market will resolve to \"No\".\n\nAn emergency meeting is",
+          "slug": "fed-emergency-rate-cut-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2025-12-31T12:00:00Z",
+          "volume_24hr": 3.7,
+          "liquidity": 50829.1792,
+          "comment_count": 4,
+          "tags": [
+            "2025 Predictions",
+            "Business",
+            "Economy",
+            "Fed Rates",
+            "Economic Policy",
+            "Jerome Powell",
+            "Fed"
+          ],
+          "prediction_markets": [
+            {
+              "question": "Fed emergency rate cut in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.055\", \"0.945\"]",
+              "volume": "1007746.09259",
+              "liquidity": "50829.1792",
+              "end_date": "2025-12-31T12:00:00Z"
+            }
+          ]
+        },
+        {
+          "rank": 5,
+          "relevance_score": 0.4,
+          "relevance_explanation": "The prediction market has low relevance to the original tweet. While both the tweet and the market are related to cryptocurrency, the specific coins and price predictions differ.",
+          "key_matches": [
+            "Crypto",
+            "Investment",
+            "Sentiment"
+          ],
+          "market_id": "16097",
+          "title": "What price will Ethereum hit in 2025?",
+          "description": "This is a market group over what prices Ethereum will hit in 2025.",
+          "slug": "what-price-will-ethereum-hit-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2026-01-01T05:00:00Z",
+          "volume_24hr": 92644.160973,
+          "liquidity": 716599.21446,
+          "comment_count": 2679,
+          "tags": [
+            "Crypto",
+            "Crypto Prices",
+            "Ethereum",
+            "Hit Price",
+            "Yearly"
+          ],
+          "prediction_markets": [
+            {
+              "question": "Will Ethereum hit $7,000 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.275\", \"0.725\"]",
+              "volume": "2103714.703455",
+              "liquidity": "111657.1533",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum hit $10,000 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.0815\", \"0.9185\"]",
+              "volume": "2494250.902266",
+              "liquidity": "65053.5075",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum hit $8,000 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.175\", \"0.825\"]",
+              "volume": "1632762.159097",
+              "liquidity": "100246.9457",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum hit $6,000 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.445\", \"0.555\"]",
+              "volume": "2918936.802658",
+              "liquidity": "101778.0655",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum hit $5,000 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.8215\", \"0.1785\"]",
+              "volume": "4201203.232247",
+              "liquidity": "72318.16946",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum hit $4,000 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"1\", \"0\"]",
+              "volume": "3572826.574547",
+              "liquidity": "",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum dip to $3,000 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"1\", \"0\"]",
+              "volume": "170966.406011",
+              "liquidity": "",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum dip to $2,500 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"1\", \"0\"]",
+              "volume": "175483.375139",
+              "liquidity": "",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum dip to $2,000 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"1\", \"0\"]",
+              "volume": "323442.766711",
+              "liquidity": "",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum dip to $1,500 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"1\", \"0\"]",
+              "volume": "500584.609489",
+              "liquidity": "",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum dip to $1,000 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.035\", \"0.965\"]",
+              "volume": "588277.230365",
+              "liquidity": "66516.21151",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum dip to $1,300 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.0305\", \"0.9695\"]",
+              "volume": "48705.367392",
+              "liquidity": "28270.10038",
+              "end_date": "2025-12-31T00:00:00Z"
+            },
+            {
+              "question": "Will Ethereum hit $4,400 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"1\", \"0\"]",
+              "volume": "77955.099461",
+              "liquidity": "",
+              "end_date": "2025-12-31T12:00:00Z"
+            },
+            {
+              "question": "Will Ethereum hit $14,000 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.044\", \"0.956\"]",
+              "volume": "372730.597441",
+              "liquidity": "68681.31054",
+              "end_date": ""
+            },
+            {
+              "question": "Will Ethereum dip to $800 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.013\", \"0.987\"]",
+              "volume": "18116.484033",
+              "liquidity": "42947.09136",
+              "end_date": "2025-12-31T00:00:00Z"
+            },
+            {
+              "question": "Will Ethereum hit $17,000 by December 31?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.0265\", \"0.9735\"]",
+              "volume": "192805.115915",
+              "liquidity": "59130.65921",
+              "end_date": "2026-01-01T04:00:00Z"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "test_case": 3,
+    "category": "Politics",
+    "result": {
+      "original_tweet": {
+        "text": "Trump's 2024 election win is guaranteed based on latest swing state polls! 🇺🇸",
+        "timestamp": "2025-09-14T05:58:02Z"
+      },
+      "sentiment_analysis": {
+        "search_query": "Trump 2024",
+        "key_topics": [
+          "2024 US Presidential Election",
+          "Trump",
+          "Swing State Polls"
+        ],
+        "sentiment_score": 0.8,
+        "confidence": 0.8
+      },
+      "ranking_summary": {
+        "total_markets_analyzed": 5,
+        "top_markets_returned": 5,
+        "ranking_method": "AI-powered relevance scoring using Cohere"
+      },
+      "top_relevant_markets": [
+        {
+          "rank": 1,
+          "relevance_score": 0.2,
+          "relevance_explanation": "The prediction market about a potential US recession in 2025 has low relevance to the original tweet, which focuses on Trump's election prospects in 2024 based on swing state polls.",
+          "key_matches": [
+            "US",
+            "2024",
+            "2025"
+          ],
+          "market_id": "16092",
+          "title": "US recession in 2025?",
+          "description": "This market will resolve to “Yes”, if either of the following conditions are met:\n\n1.  The National Bureau of Economic Research (NBER) publicly announces that a recession has occurred in the United States, at any point in 2025, with the announcement made by December 31, 2025, 11:59 PM ET.\n\n2.  The s",
+          "slug": "us-recession-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2026-02-28T12:00:00Z",
+          "volume_24hr": 11995.162768,
+          "liquidity": 95601.7638,
+          "comment_count": 798,
+          "tags": [
+            "Business",
+            "Economy",
+            "2025 Predictions",
+            "xtrd-1",
+            "Macro Graph",
+            "Economic Policy"
+          ],
+          "prediction_markets": [
+            {
+              "question": "US recession in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.095\", \"0.905\"]",
+              "volume": "9433714.393787",
+              "liquidity": "95601.7638",
+              "end_date": "2026-02-28T12:00:00Z"
+            }
+          ]
+        },
+        {
+          "rank": 2,
+          "relevance_score": 0.2,
+          "relevance_explanation": "The prediction market has low relevance to the original tweet. While both the tweet and the market tangentially involve Trump, the market focuses on a potential Russia-Ukraine ceasefire, which is a separate geopolitical issue.",
+          "key_matches": [
+            "Trump"
+          ],
+          "market_id": "16108",
+          "title": "Russia x Ukraine ceasefire in 2025?",
+          "description": "This market will resolve to \"Yes\" if there is an official ceasefire agreement, defined as a publicly announced and mutually agreed halt in military engagement, between Russia and Ukraine by December 31, 2025, 11:59 PM ET.\n\nIf the agreement is officially reached before the resolution date, this marke",
+          "slug": "russia-x-ukraine-ceasefire-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2025-12-31T12:00:00Z",
+          "volume_24hr": 92793.99627500003,
+          "liquidity": 211740.3752,
+          "comment_count": 19599,
+          "tags": [
+            "2025 Predictions",
+            "Ukraine",
+            "Geopolitics",
+            "Politics",
+            "Macro Geopolitics",
+            "World",
+            "Foreign Policy",
+            "Trump-Putin",
+            "Trump-Zelenskyy"
+          ],
+          "prediction_markets": [
+            {
+              "question": "Russia x Ukraine ceasefire in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.155\", \"0.845\"]",
+              "volume": "19453978.106497",
+              "liquidity": "211740.3752",
+              "end_date": "2025-12-31T12:00:00Z"
+            }
+          ]
+        },
+        {
+          "rank": 3,
+          "relevance_score": 0.2,
+          "relevance_explanation": "The prediction market has low relevance to the original tweet. While both the tweet and the market touch on political figures, the tweet specifically discusses Trump's potential election win in 2024, whereas the market focuses on the possibility of Putin being removed from power in 2025.",
+          "key_matches": [
+            "Politics",
+            "US/Russia relations"
+          ],
+          "market_id": "16109",
+          "title": "Putin out as President of Russia in 2025?",
+          "description": "This market will resolve to \"Yes\" if Russia's president, Vladimir Putin, is removed from power for any length of time between December 28, 2024, and December 31, 2025, 11:59 PM ET. Otherwise, this market will resolve to \"No\".\n\nPresident Vladimir Putin will be considered to be removed from power if h",
+          "slug": "putin-out-as-president-of-russia-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2025-12-31T12:00:00Z",
+          "volume_24hr": 227.03,
+          "liquidity": 35832.621,
+          "comment_count": 81,
+          "tags": [
+            "2025 Predictions",
+            "russia",
+            "Geopolitics",
+            "Ukraine",
+            "Politics",
+            "World"
+          ],
+          "prediction_markets": [
+            {
+              "question": "Putin out as President of Russia in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.036\", \"0.964\"]",
+              "volume": "1186194.947483",
+              "liquidity": "35832.621",
+              "end_date": "2025-12-31T12:00:00Z"
+            }
+          ]
+        },
+        {
+          "rank": 4,
+          "relevance_score": 0.1,
+          "relevance_explanation": "The prediction market about Ukraine joining NATO has very low relevance to the original tweet about Trump's election win in 2024.",
+          "key_matches": [
+            "Trump"
+          ],
+          "market_id": "16104",
+          "title": "Ukraine joins NATO in 2025?",
+          "description": "If Ukraine has officially joined NATO as a full member state at any point by December 31, 2025, 11:59 PM ET this market will resolve to “Yes”. Otherwise, this market will resolve to \"No.\"\n\nThe primary settlement source for this market will be the official NATO website (https://www.nato.int/cps/en/na",
+          "slug": "ukraine-joins-nato-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2025-12-31T12:00:00Z",
+          "volume_24hr": 0,
+          "liquidity": 66048.88538,
+          "comment_count": 4,
+          "tags": [
+            "putin",
+            "2025 Predictions",
+            "Ukraine",
+            "nato",
+            "Geopolitics",
+            "Politics",
+            "russia",
+            "World",
+            "Foreign Policy",
+            "Trump-Putin",
+            "Security Guarantee",
+            "Trump-Zelenskyy"
+          ],
+          "prediction_markets": [
+            {
+              "question": "Ukraine joins NATO in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.023\", \"0.977\"]",
+              "volume": "93660.969265",
+              "liquidity": "66048.88538",
+              "end_date": "2025-12-31T12:00:00Z"
+            }
+          ]
+        },
+        {
+          "rank": 5,
+          "relevance_score": 0.0,
+          "relevance_explanation": "The prediction market about a potential Fed rate hike in 2025 has no relevance to the original tweet, which focuses on Trump's potential election win in 2024 and swing state polls.",
+          "key_matches": [
+            "None"
+          ],
+          "market_id": "16084",
+          "title": "Fed rate hike in 2025?",
+          "description": "This market will resolve to “Yes” if the upper bound of the target federal funds rate is increased at any point between January 1, 2025 and the Fed's December 2025 meeting, currently scheduled for December 9-10. Otherwise, this market will resolve to “No”.\n\nThis market may not resolve to \"No\" until ",
+          "slug": "fed-rate-hike-in-2025",
+          "active": true,
+          "closed": false,
+          "end_date": "2025-12-10T12:00:00Z",
+          "volume_24hr": 5117.485153,
+          "liquidity": 69796.82897,
+          "comment_count": 17,
+          "tags": [
+            "Fed Rates",
+            "Business",
+            "2025 Predictions",
+            "Economic Policy",
+            "Jerome Powell",
+            "Fed"
+          ],
+          "prediction_markets": [
+            {
+              "question": "Fed rate hike in 2025?",
+              "outcomes": "[\"Yes\", \"No\"]",
+              "outcome_prices": "[\"0.027\", \"0.973\"]",
+              "volume": "540980.201023",
+              "liquidity": "69796.82897",
+              "end_date": "2025-12-10T12:00:00Z"
+            }
+          ]
+        }
+      ]
+    }
+  }
+]

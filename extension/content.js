@@ -803,6 +803,62 @@ async function fetchClosedPositions() {
   });
 }
 
+async function analyzeTweetContent(tweet_text, author) {
+  console.log('🔍 [DEBUG] Analyzing tweet content via Chrome messaging...');
+
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({
+      action: 'analyzeTweet',
+      tweet_text: tweet_text,
+      author: author
+    }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error('❌ [DEBUG] Chrome runtime error for tweet analysis:', chrome.runtime.lastError);
+        resolve(null);
+        return;
+      }
+
+      if (response && response.success && response.data) {
+        console.log('✅ [DEBUG] Got tweet analysis results!');
+        resolve(response.data);
+      } else {
+        console.error('❌ [DEBUG] Failed to analyze tweet:', response?.error);
+        resolve(null);
+      }
+    });
+  });
+}
+
+function extractTweetContent(button) {
+  try {
+    // Find the tweet container by traversing up from the button
+    const tweet = button.closest('[data-testid="tweet"]');
+    if (!tweet) {
+      console.log('⚠️ [DEBUG] Could not find tweet container');
+      return null;
+    }
+
+    // Extract tweet text - Twitter uses this structure for tweet text
+    const tweetTextElement = tweet.querySelector('[data-testid="tweetText"]');
+    const tweetText = tweetTextElement ? tweetTextElement.innerText : '';
+
+    // Extract author - look for user name
+    const authorElement = tweet.querySelector('[data-testid="User-Name"] a span');
+    const author = authorElement ? authorElement.innerText.replace('@', '') : 'TwitterUser';
+
+    console.log('📝 [DEBUG] Extracted tweet:', { tweetText, author });
+
+    return {
+      text: tweetText,
+      author: author
+    };
+
+  } catch (error) {
+    console.error('❌ [DEBUG] Error extracting tweet content:', error);
+    return null;
+  }
+}
+
 // Function to setup market notes popup handlers
 function setupMarketNotesHandlers() {
   if (!marketNotesPopup) return;
@@ -1413,26 +1469,45 @@ function injectPolymarketButtons() {
       actualButton.innerHTML = '<div style="color: rgb(139, 152, 165);">⏳</div>';
       actualButton.disabled = true;
 
-      // First, always try to fetch carousel data to see how many events we have
-      console.log('🔍 [DEBUG] Checking for available events...');
-      let carouselData = await fetchMarketDataWithType('carousel');
+      // First, try to extract and analyze the tweet content
+      console.log('🔍 [DEBUG] Extracting tweet content for analysis...');
+      const tweetContent = extractTweetContent(actualButton);
       let marketData;
 
-      if (carouselData && carouselData.events && carouselData.events.length > 1) {
-        // We have multiple events, use carousel mode from start
-        console.log('🎠 [DEBUG] Found multiple events, starting in carousel mode');
-        currentMarketType = 'carousel';
-        marketData = carouselData;
+      if (tweetContent && tweetContent.text.trim()) {
+        console.log('📝 [DEBUG] Found tweet text, analyzing with AI pipeline...');
+        actualButton.innerHTML = '<div style="color: rgb(139, 152, 165);">🧠 Analyzing...</div>';
+
+        // Analyze tweet content using the pipeline
+        const analysisResult = await analyzeTweetContent(tweetContent.text, tweetContent.author);
+
+        if (analysisResult && analysisResult.events && analysisResult.events.length > 0) {
+          console.log('🎯 [DEBUG] AI found relevant markets!', analysisResult.events.length, 'markets');
+          marketData = analysisResult;
+          currentMarketType = 'carousel'; // Use carousel mode for AI results
+        } else {
+          console.log('⚠️ [DEBUG] No relevant markets found, falling back to sample data');
+          marketData = await fetchMarketData();
+        }
       } else {
-        // Single event, fetch based on current market type
-        console.log('🔍 [DEBUG] Single event available, fetching normal market data...');
-        marketData = await fetchMarketData();
+        console.log('⚠️ [DEBUG] Could not extract tweet text, using sample data...');
+        // Fallback to existing logic if tweet extraction fails
+        let carouselData = await fetchMarketDataWithType('carousel');
+
+        if (carouselData && carouselData.events && carouselData.events.length > 1) {
+          console.log('🎠 [DEBUG] Found multiple events, starting in carousel mode');
+          currentMarketType = 'carousel';
+          marketData = carouselData;
+        } else {
+          console.log('🔍 [DEBUG] Single event available, fetching normal market data...');
+          marketData = await fetchMarketData();
+        }
       }
 
       if (!marketData) {
         console.error('❌ [DEBUG] No market data received - showing error');
         // Show detailed error
-        alert('❌ Trading backend not available.\n\nDebugging info:\n- Check Chrome DevTools console for detailed errors\n- Ensure backend is running: ./start_trading.sh\n- Backend should be at http://127.0.0.1:5000');
+        alert('❌ Trading backend not available.\n\nDebugging info:\n- Check Chrome DevTools console for detailed errors\n- Ensure backend is running: ./scripts/start_trading.sh\n- Backend should be at http://127.0.0.1:5000\n- Tweet analysis pipeline may need API keys');
         actualButton.innerHTML = `<img src="${chrome.runtime.getURL('icons/pmarket.png')}" alt="Polymarket" width="20" height="20" style="border-radius: 2px; opacity: 0.8;" />`;
         actualButton.disabled = false;
         return;

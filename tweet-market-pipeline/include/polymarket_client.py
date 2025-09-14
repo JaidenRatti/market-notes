@@ -8,7 +8,7 @@ import aiohttp
 import json
 from typing import List, Dict, Any, Optional
 from urllib.parse import urlencode
-from config import config
+from .config import config
 
 class PolymarketClient:
     """Client for interacting with Polymarket's public API"""

@@ -7,8 +7,9 @@ import json
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'include'))
 
-from enhanced_pipeline import process_tweet_with_ranking_sync
+from include.enhanced_pipeline import process_tweet_with_ranking_sync
 
 def analyze_tweet(tweet_text: str, author: str = None, top_n: int = 5, save_to_file: bool = True) -> dict:
     """

@@ -10,9 +10,9 @@ import sys
 from typing import Dict, Any, Optional
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from sentiment_extractor import analyze_tweet_sentiment
-from polymarket_client import PolymarketClient
-from market_ranker import MarketRelevanceRanker, format_top_markets_json
+from .sentiment_extractor import analyze_tweet_sentiment
+from .polymarket_client import PolymarketClient
+from .market_ranker import MarketRelevanceRanker, format_top_markets_json
 
 class EnhancedTweetMarketPipeline:
     """Complete AI-powered pipeline from tweet to ranked markets"""

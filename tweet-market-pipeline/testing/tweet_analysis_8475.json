@@ -1,0 +1,319 @@
+{
+  "original_tweet": {
+    "text": "Test tweet for module structure",
+    "timestamp": "2025-09-14T05:58:02Z"
+  },
+  "sentiment_analysis": {
+    "search_query": "None",
+    "key_topics": [
+      "None identified."
+    ],
+    "sentiment_score": 0.0,
+    "confidence": 0.8
+  },
+  "ranking_summary": {
+    "total_markets_analyzed": 1,
+    "top_markets_returned": 1,
+    "ranking_method": "AI-powered relevance scoring using Cohere"
+  },
+  "top_relevant_markets": [
+    {
+      "rank": 1,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market has no relevance to the original tweet. The tweet is a test and contains no substantive content related to the market's topic of US politics and the Trump Cabinet.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "32802",
+      "title": "Who will be the first to leave the Trump Cabinet?",
+      "description": "This market will resolve according to the next listed individual that it is announced will leave the Trump Cabinet, or otherwise ceases to be a member of administration.\nIf none of the listed individuals leave by December 31, 2025, 11:59 PM ET, this market will resolve to “None in 2025”.\n\nAn announc",
+      "slug": "who-will-be-the-first-to-leave-the-trump-cabinet",
+      "active": true,
+      "closed": false,
+      "end_date": "2025-12-31T00:00:00Z",
+      "volume_24hr": 30.04,
+      "liquidity": 58393.93242,
+      "comment_count": 0,
+      "tags": [
+        "Trump Presidency",
+        "Politics",
+        "Cabinet",
+        "Trump"
+      ],
+      "prediction_markets": [
+        {
+          "question": "Will Person E be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": ""
+        },
+        {
+          "question": "Will Mike Waltz be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0095\", \"0.9905\"]",
+          "volume": "5379.819076",
+          "liquidity": "1089.11105",
+          "end_date": ""
+        },
+        {
+          "question": "Will Stephen Miran be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.2545\", \"0.7455\"]",
+          "volume": "38580.292073",
+          "liquidity": "3794.12039",
+          "end_date": ""
+        },
+        {
+          "question": "Will J.D. Vance be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0515\", \"0.9485\"]",
+          "volume": "7346.313966",
+          "liquidity": "634.0297",
+          "end_date": ""
+        },
+        {
+          "question": "Will Marco Rubio be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.014\", \"0.986\"]",
+          "volume": "7412.586808",
+          "liquidity": "1448.416",
+          "end_date": ""
+        },
+        {
+          "question": "Will Scott Bessent be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.01\", \"0.99\"]",
+          "volume": "7109.559263",
+          "liquidity": "1143.55004",
+          "end_date": ""
+        },
+        {
+          "question": "Will Pete Hegseth be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0465\", \"0.9535\"]",
+          "volume": "17548.17725",
+          "liquidity": "5921.28155",
+          "end_date": ""
+        },
+        {
+          "question": "Will Pam Bondi be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.011\", \"0.989\"]",
+          "volume": "5690.287871",
+          "liquidity": "478.823",
+          "end_date": ""
+        },
+        {
+          "question": "Will Person B be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": ""
+        },
+        {
+          "question": "Will Doug Burgum be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0035\", \"0.9965\"]",
+          "volume": "5036.9545",
+          "liquidity": "3356.24042",
+          "end_date": ""
+        },
+        {
+          "question": "Will Brooke Rollins be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0055\", \"0.9945\"]",
+          "volume": "5043.651761",
+          "liquidity": "3334.30954",
+          "end_date": ""
+        },
+        {
+          "question": "Will Howard Lutnick be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.01\", \"0.99\"]",
+          "volume": "7452.725211",
+          "liquidity": "2832.453",
+          "end_date": ""
+        },
+        {
+          "question": "Will Lori Chavez-DeRemer be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0045\", \"0.9955\"]",
+          "volume": "6836.3439",
+          "liquidity": "4265.53993",
+          "end_date": ""
+        },
+        {
+          "question": "Will Robert F. Kennedy Jr. be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.03\", \"0.97\"]",
+          "volume": "8895.67612",
+          "liquidity": "835.506",
+          "end_date": ""
+        },
+        {
+          "question": "Will Scott Turner be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.007\", \"0.993\"]",
+          "volume": "5181.679358",
+          "liquidity": "950.611",
+          "end_date": ""
+        },
+        {
+          "question": "Will Sean Duffy be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0055\", \"0.9945\"]",
+          "volume": "4869.931375",
+          "liquidity": "2680.86763",
+          "end_date": ""
+        },
+        {
+          "question": "Will Chris Wright be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.003\", \"0.997\"]",
+          "volume": "5682.493354",
+          "liquidity": "1043.79911",
+          "end_date": ""
+        },
+        {
+          "question": "Will another individual (Other) be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": ""
+        },
+        {
+          "question": "Will Linda McMahon be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0045\", \"0.9955\"]",
+          "volume": "4019.579333",
+          "liquidity": "3426.24195",
+          "end_date": ""
+        },
+        {
+          "question": "Will Doug Collins be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.007\", \"0.993\"]",
+          "volume": "7354.4992",
+          "liquidity": "1258.9282",
+          "end_date": ""
+        },
+        {
+          "question": "Will Kristi Noem be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.005\", \"0.995\"]",
+          "volume": "8823.175313",
+          "liquidity": "2469.10372",
+          "end_date": ""
+        },
+        {
+          "question": "Will None in 2025 occur?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.55\", \"0.45\"]",
+          "volume": "14942.472686",
+          "liquidity": "1777.3109",
+          "end_date": ""
+        },
+        {
+          "question": "Will Lee Zeldin be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0075\", \"0.9925\"]",
+          "volume": "5417.174999",
+          "liquidity": "2895.838",
+          "end_date": ""
+        },
+        {
+          "question": "Will Susie Wiles be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0435\", \"0.9565\"]",
+          "volume": "5864.604632",
+          "liquidity": "2379.18487",
+          "end_date": ""
+        },
+        {
+          "question": "Will Tulsi Gabbard be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.024\", \"0.976\"]",
+          "volume": "8657.894412",
+          "liquidity": "6216.63851",
+          "end_date": ""
+        },
+        {
+          "question": "Will Russell T. Vought be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0035\", \"0.9965\"]",
+          "volume": "4901.467165",
+          "liquidity": "1011.57409",
+          "end_date": ""
+        },
+        {
+          "question": "Will John Ratcliffe be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0045\", \"0.9955\"]",
+          "volume": "4837.684428",
+          "liquidity": "797.92801",
+          "end_date": ""
+        },
+        {
+          "question": "Will Jamieson Greer be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0045\", \"0.9955\"]",
+          "volume": "5014.883677",
+          "liquidity": "1076.26601",
+          "end_date": ""
+        },
+        {
+          "question": "Will Kelly Loeffler be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.006\", \"0.994\"]",
+          "volume": "5346.751333",
+          "liquidity": "1286.2308",
+          "end_date": ""
+        },
+        {
+          "question": "Will Person A be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": ""
+        },
+        {
+          "question": "Will Person C be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": ""
+        },
+        {
+          "question": "Will Person D be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": ""
+        },
+        {
+          "question": "Will Person F be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": ""
+        },
+        {
+          "question": "Will Person G be the first to leave the Trump Cabinet in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": ""
+        }
+      ]
+    }
+  ]
+}

@@ -7,8 +7,8 @@ import asyncio
 from typing import List, Optional, Dict, Any
 import cohere
 
-from models import TweetInput, SentimentAnalysis
-from config import config
+from .models import TweetInput, SentimentAnalysis
+from .config import config
 
 
 class SentimentExtractor:

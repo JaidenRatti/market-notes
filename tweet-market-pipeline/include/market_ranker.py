@@ -8,7 +8,7 @@ import json
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 import cohere
-from config import config
+from .config import config
 
 @dataclass
 class MarketRelevanceScore:

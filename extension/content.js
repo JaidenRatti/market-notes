@@ -6,6 +6,28 @@ let currentEventData = null;
 let currentEventIndex = 0;
 let allEvents = [];
 
+// Helper functions for price validation
+function validatePrice(price, fallback = 0.01) {
+  if (isNaN(price) || !isFinite(price) || price <= 0) {
+    return fallback;
+  }
+  // Ensure price is between 1¢ and 99¢
+  return Math.max(0.01, Math.min(0.99, price));
+}
+
+function formatCentPrice(price) {
+  const validPrice = validatePrice(price);
+  const cents = Math.round(validPrice * 100);
+  return `${cents}¢`;
+}
+
+function validatePayout(payout) {
+  if (isNaN(payout) || !isFinite(payout) || payout < 0) {
+    return 0;
+  }
+  return payout;
+}
+
 // Function to create position card
 function createPositionCard(position) {
   const pnlClass = position.pnl >= 0 ? 'positive' : 'negative';
@@ -146,14 +168,23 @@ async function createPositionsCarousel() {
 
 // Function to inject positions section on profile pages
 async function injectPositionsSection() {
-  // Check if we're on a profile page (not home, explore, notifications, etc.)
+  // Check if we're on a profile page - must be exactly /@username or /username format
   const path = window.location.pathname;
+
+  // Exclude specific known pages
   if (path === '/' || path === '/home' || path === '/explore' || path === '/notifications' ||
       path === '/messages' || path === '/bookmarks' || path === '/lists' ||
       path === '/communities' || path === '/premium' || path === '/jobs' ||
+      path === '/search' || path.startsWith('/search?') ||
       path.startsWith('/i/') || path.startsWith('/settings') ||
       path.includes('/status/') || path.includes('/photo/') ||
-      !path.match(/^\/[a-zA-Z0-9_]+$/)) {
+      path.includes('/with_replies') || path.includes('/media') ||
+      path.includes('/likes') || path.includes('/following') || path.includes('/followers')) {
+    return;
+  }
+
+  // Profile pages should match exactly /@username or /username (no additional paths)
+  if (!path.match(/^\/[a-zA-Z0-9_]+$/)) {
     return;
   }
 
@@ -373,8 +404,8 @@ function createSingleMarketPopupHTML(marketData, headerControls, carouselControl
         <h4>Place Trade</h4>
         <div class="trade-form">
           <div class="side-selector">
-            <button class="side-btn yes-side-btn active" data-side="YES">YES ${Math.round((marketData.yesPrice || marketData.yes_price) * 100)}¢</button>
-            <button class="side-btn no-side-btn" data-side="NO">NO ${Math.round((marketData.noPrice || marketData.no_price) * 100)}¢</button>
+            <button class="side-btn yes-side-btn active" data-side="YES">YES ${formatCentPrice(marketData.yesPrice || marketData.yes_price)}</button>
+            <button class="side-btn no-side-btn" data-side="NO">NO ${formatCentPrice(marketData.noPrice || marketData.no_price)}</button>
           </div>
           <div class="amount-input-group">
             <label>Amount (USD):</label>
@@ -864,8 +895,8 @@ function updateSingleMarketPrices(prices) {
   const noBtn = marketNotesPopup.querySelector('.no-side-btn');
 
   if (yesBtn && noBtn) {
-    yesBtn.textContent = `YES ${Math.round(prices.yes_price * 100)}¢`;
-    noBtn.textContent = `NO ${Math.round(prices.no_price * 100)}¢`;
+    yesBtn.textContent = `YES ${formatCentPrice(prices.yes_price)}`;
+    noBtn.textContent = `NO ${formatCentPrice(prices.no_price)}`;
     updateWinningsCalculation();
   }
 }
@@ -885,8 +916,8 @@ function updateMultiMarketPrices(prices) {
       // Update the trading buttons if they exist (when market is expanded)
       const yesBtn = marketItem.querySelector('.yes-side-btn');
       const noBtn = marketItem.querySelector('.no-side-btn');
-      if (yesBtn) yesBtn.textContent = `YES ${Math.round(marketPrice.yes_price * 100)}¢`;
-      if (noBtn) noBtn.textContent = `NO ${Math.round(marketPrice.no_price * 100)}¢`;
+      if (yesBtn) yesBtn.textContent = `YES ${formatCentPrice(marketPrice.yes_price)}`;
+      if (noBtn) noBtn.textContent = `NO ${formatCentPrice(marketPrice.no_price)}`;
     }
   });
   updateWinningsCalculation();
@@ -931,15 +962,15 @@ function showTradingInterface(marketItem) {
   // Get the percentage value to calculate the prices
   const percentageEl = marketItem.querySelector('.probability-percentage');
   const percentage = percentageEl ? parseInt(percentageEl.textContent) : 50;
-  const yesPrice = percentage; // Already in cents
-  const noPrice = 100 - percentage; // Calculate NO price
+  const yesPrice = percentage / 100; // Convert percentage to decimal
+  const noPrice = (100 - percentage) / 100; // Calculate NO price as decimal
 
   // Add trading interface to the active market
   const tradingHTML = `
     <div class="trade-form">
       <div class="side-selector">
-        <button class="side-btn yes-side-btn active" data-side="YES" data-market-id="${marketId}">YES ${yesPrice}¢</button>
-        <button class="side-btn no-side-btn" data-side="NO" data-market-id="${marketId}">NO ${noPrice}¢</button>
+        <button class="side-btn yes-side-btn active" data-side="YES" data-market-id="${marketId}">YES ${formatCentPrice(yesPrice)}</button>
+        <button class="side-btn no-side-btn" data-side="NO" data-market-id="${marketId}">NO ${formatCentPrice(noPrice)}</button>
       </div>
       <div class="amount-input-group">
         <label>Amount (USD):</label>
@@ -1199,15 +1230,21 @@ function setupTradingHandlers() {
       console.log('🔍 [DEBUG] Side buttons not found, using fallback prices');
     }
 
-    const price = side === 'YES' ? yesPrice : noPrice;
-    console.log(`🔍 [DEBUG] Using ${side} price: ${price}`);
+    // Validate and ensure price is safe for calculation
+    let price = side === 'YES' ? yesPrice : noPrice;
+    price = validatePrice(price); // Ensure price is between 1¢ and 99¢
+    console.log(`🔍 [DEBUG] Using validated ${side} price: ${price}`);
 
     // Calculate shares you'd get for your USD amount
     const shares = amount / price;
 
     // If you win, each share is worth $1, so total payout is number of shares
-    const totalPayout = shares;
-    const profit = totalPayout - amount;
+    const rawTotalPayout = shares;
+    const rawProfit = rawTotalPayout - amount;
+
+    // Validate payouts to prevent Infinity/NaN
+    const totalPayout = validatePayout(rawTotalPayout);
+    const profit = validatePayout(rawProfit) || (rawProfit < 0 ? rawProfit : 0); // Allow negative profit
 
     console.log(`🔍 [DEBUG] Final calculation: Shares=${shares.toFixed(4)}, Payout=$${totalPayout.toFixed(2)}, Profit=$${profit.toFixed(2)}`);
 

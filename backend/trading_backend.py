@@ -40,7 +40,7 @@ def setup_client():
 def load_single_market_data():
     """Load single market data from samplein.json"""
     try:
-        with open('samplein.json', 'r') as f:
+        with open('data/samplein.json', 'r') as f:
             data = json.load(f)
 
         market = data['events'][0]['markets'][0]
@@ -65,7 +65,7 @@ def load_single_market_data():
 def load_multi_market_data():
     """Load multi-market data from samplemultimarkets.json"""
     try:
-        with open('samplemultimarkets.json', 'r') as f:
+        with open('data/samplemultimarkets.json', 'r') as f:
             data = json.load(f)
 
         event = data['events'][0]
@@ -321,7 +321,7 @@ def get_positions():
         except Exception as e:
             print(f"❌ API call failed: {e}")
             print(f"⚠️ Falling back to sample data for testing")
-            with open('sampleoneopenposition.json', 'r') as f:
+            with open('data/sampleoneopenposition.json', 'r') as f:
                 positions = json.load(f)
                 print(f"Using sample data: {len(positions)} positions")
         
@@ -376,7 +376,7 @@ def get_positions():
         print(f"Error fetching positions: {e}")
         # Fall back to sample data for testing
         try:
-            with open('sampleoneopenposition.json', 'r') as f:
+            with open('data/sampleoneopenposition.json', 'r') as f:
                 sample_positions = json.load(f)
                 print("Using sample position data as fallback")
                 

@@ -1,33 +1,4 @@
-// Fake Polymarket data for testing
-const FAKE_MARKET_DATA = [
-  {
-    id: 1,
-    title: "Will Bitcoin reach $100,000 by end of 2024?",
-    yesPrice: 0.67,
-    noPrice: 0.33,
-    volume: "$2.5M",
-    description: "Market resolves YES if Bitcoin (BTC) trades at or above $100,000 on any major exchange before January 1, 2025.",
-    chart: "📈"
-  },
-  {
-    id: 2,
-    title: "Will Donald Trump win the 2024 Presidential Election?",
-    yesPrice: 0.52,
-    noPrice: 0.48,
-    volume: "$15.2M",
-    description: "Market resolves YES if Donald Trump is elected President in the 2024 US Presidential Election.",
-    chart: "📊"
-  },
-  {
-    id: 3,
-    title: "Will OpenAI release GPT-5 in 2024?",
-    yesPrice: 0.23,
-    noPrice: 0.77,
-    volume: "$1.8M",
-    description: "Market resolves YES if OpenAI officially releases a model named GPT-5 before January 1, 2025.",
-    chart: "📉"
-  }
-];
+// Real market data will be fetched from backend
 
 // Mock user position data
 const MOCK_USER_POSITIONS = [
@@ -251,34 +222,35 @@ function setupCarouselListeners() {
       const position = MOCK_USER_POSITIONS.find(p => p.id === positionId);
 
       if (position) {
-        // Convert position to market data format
-        const marketData = {
-          title: position.title,
-          yesPrice: position.position === 'YES' ? position.currentPrice : 1 - position.currentPrice,
-          noPrice: position.position === 'NO' ? position.currentPrice : 1 - position.currentPrice,
-          volume: position.volume,
-          description: `Market for "${position.title}". Current position: ${position.position} at ${Math.round(position.currentPrice * 100)}¢`,
-          chart: position.pnl >= 0 ? "📈" : "📉"
-        };
-
         // Close existing popup
         if (marketNotesPopup) {
           marketNotesPopup.remove();
           marketNotesPopup = null;
         }
 
-        // Create and show popup (same as tweet context for navigation controls)
-        marketNotesPopup = createMarketNotesPopup(marketData, 'tweet');
-        document.body.appendChild(marketNotesPopup);
+        // Fetch real market data instead of using position data
+        fetchMarketData().then(marketData => {
+          if (marketData) {
+            // Update currentMarketType to match the fetched data
+            currentMarketType = marketData.type || 'multi';
+            console.log('🔄 [DEBUG] Initial popup: set currentMarketType to', currentMarketType);
+            
+            // Create and show popup with real trading data
+            marketNotesPopup = createMarketNotesPopup(marketData, 'tweet');
+            document.body.appendChild(marketNotesPopup);
 
-        // Position popup to the right side of screen
-        marketNotesPopup.style.position = 'fixed';
-        marketNotesPopup.style.right = '20px';
-        marketNotesPopup.style.top = '100px';
-        marketNotesPopup.style.zIndex = '10000';
+            // Position popup to the right side of screen
+            marketNotesPopup.style.position = 'fixed';
+            marketNotesPopup.style.right = '20px';
+            marketNotesPopup.style.top = '100px';
+            marketNotesPopup.style.zIndex = '10000';
 
-        // Add event handlers (same as tweet popups)
-        setupMarketNotesHandlers();
+            // Add event handlers
+            setupMarketNotesHandlers();
+          } else {
+            alert('❌ Trading backend not available. Please run: ./start_trading.sh');
+          }
+        });
       }
     });
   });
@@ -321,33 +293,113 @@ function createPolymarketButtonForHeader() {
   return buttonContainer;
 }
 
-// Function to create market notes popup
+// Function to create market notes popup with trading
 function createMarketNotesPopup(marketData, context = 'tweet') {
   const popup = document.createElement('div');
   popup.className = 'market-notes-popup';
 
   const headerControls = context === 'tweet' ? `
     <div class="market-controls">
-      <button class="all-markets-btn">All Markets</button>
-      <button class="next-market-btn" title="Next Market">→</button>
+      <button class="refresh-prices-btn" title="Refresh Live Prices">🔄</button>
+      <button class="switch-market-btn" title="Switch Market Type">➡️</button>
+      <button class="all-markets-btn" title="Market Info">ℹ️</button>
     </div>
   ` : '';
 
-  const carouselDots = context === 'tweet' ? `
-    <div class="carousel-dots">
-      ${FAKE_MARKET_DATA.map((_, index) => {
-        const currentIndex = FAKE_MARKET_DATA.findIndex(m => m.title === marketData.title);
-        const isActive = index === currentIndex;
-        return `<button class="carousel-dot ${isActive ? 'active' : ''}" data-market-index="${index}"></button>`;
-      }).join('')}
-    </div>
-  ` : '';
+  // Check if this is a multi-market event
+  if (marketData.type === 'multi') {
+    popup.innerHTML = createMultiMarketPopupHTML(marketData, headerControls);
+  } else {
+    popup.innerHTML = createSingleMarketPopupHTML(marketData, headerControls);
+  }
 
-  popup.innerHTML = `
+  // Make popup draggable
+  makeDraggable(popup);
+
+  return popup;
+}
+
+// Function to create single market popup HTML
+function createSingleMarketPopupHTML(marketData, headerControls) {
+  return `
     <div class="market-notes-header draggable-header">
       <div class="header-left">
         <button class="close-popup">×</button>
-        <h3>Market Notes</h3>
+        <h3>Polymarket Trading</h3>
+      </div>
+      <div class="header-right">
+        ${headerControls}
+      </div>
+    </div>
+    <div class="market-notes-content">
+      <div class="market-info">
+        <h4>${marketData.title || marketData.question}</h4>
+
+        <div class="market-volume">Volume: ${marketData.volume}</div>
+
+        <h4>Place Trade</h4>
+        <div class="trade-form">
+          <div class="side-selector">
+            <button class="side-btn yes-side-btn active" data-side="YES">YES ${Math.round((marketData.yesPrice || marketData.yes_price) * 100)}¢</button>
+            <button class="side-btn no-side-btn" data-side="NO">NO ${Math.round((marketData.noPrice || marketData.no_price) * 100)}¢</button>
+          </div>
+          <div class="amount-input-group">
+            <label>Amount (USD):</label>
+            <input type="text" class="amount-input" placeholder="$0" inputmode="decimal">
+            <div class="potential-winnings">
+              <span class="winnings-text">Potential payout: <span class="winnings-amount">$0.00</span></span>
+              <span class="profit-text">Profit: <span class="profit-amount">$0.00</span></span>
+            </div>
+          </div>
+          <div class="trade-buttons">
+            <button class="execute-trade-btn">Execute Trade</button>
+          </div>
+        </div>
+        <div class="trade-status"></div>
+
+        <div class="market-description-section">
+          <h5>Market Details</h5>
+          <p class="market-description">${marketData.description}</p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+
+// Function to create multi-market popup HTML
+function createMultiMarketPopupHTML(marketData, headerControls) {
+  const marketsHTML = marketData.markets.map((market, index) => {
+    // No default selection - user must click to activate
+    const candidateImage = market.image || market.icon || '';
+
+    // Convert YES price to percentage (e.g., 0.81 -> 81%)
+    const oddsPercentage = Math.round(market.yes_price * 100);
+
+    return `
+      <div class="multi-market-item" data-market-id="${market.id}">
+        <div class="market-candidate-header">
+          <div class="candidate-info">
+            ${candidateImage ? `<img src="${candidateImage}" alt="${market.candidate}" class="candidate-image">` : ''}
+            <div class="candidate-details">
+              <h5>${market.candidate}</h5>
+              <div class="market-volume">Volume: ${market.volume}</div>
+            </div>
+          </div>
+          <div class="market-probability">
+            <span class="probability-percentage">${oddsPercentage}%</span>
+          </div>
+        </div>
+        <!-- Trading interface will be dynamically added when user clicks -->
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="market-notes-header draggable-header">
+      <div class="header-left">
+        <button class="close-popup">×</button>
+        <h3>Polymarket Trading</h3>
       </div>
       <div class="header-right">
         ${headerControls}
@@ -356,28 +408,19 @@ function createMarketNotesPopup(marketData, context = 'tweet') {
     <div class="market-notes-content">
       <div class="market-info">
         <h4>${marketData.title}</h4>
-        <div class="market-chart">${marketData.chart}</div>
-        <div class="market-prices">
-          <div class="price-item yes">
-            <span class="price-label">YES</span>
-            <span class="price-value">${Math.round(marketData.yesPrice * 100)}¢</span>
-          </div>
-          <div class="price-item no">
-            <span class="price-label">NO</span>
-            <span class="price-value">${Math.round(marketData.noPrice * 100)}¢</span>
-          </div>
+        <div class="market-volume">Total Volume: ${marketData.volume}</div>
+
+        <div class="multi-markets-container">
+          ${marketsHTML}
         </div>
-        <div class="market-volume">Volume: ${marketData.volume}</div>
-        <p class="market-description">${marketData.description}</p>
+
+        <div class="market-description-section">
+          <h5>Event Details</h5>
+          <p class="market-description">${marketData.description}</p>
+        </div>
       </div>
-      ${carouselDots}
     </div>
   `;
-
-  // Make popup draggable
-  makeDraggable(popup);
-
-  return popup;
 }
 
 // Function to make popup draggable
@@ -387,8 +430,11 @@ function makeDraggable(popup) {
   let dragOffset = { x: 0, y: 0 };
 
   header.addEventListener('mousedown', (e) => {
-    // Don't start drag if clicking on close button
-    if (e.target.classList.contains('close-popup')) return;
+    // Don't start drag if clicking on close button or any button in header
+    if (e.target.classList.contains('close-popup') || 
+        e.target.classList.contains('switch-market-btn') ||
+        e.target.classList.contains('refresh-prices-btn') ||
+        e.target.classList.contains('all-markets-btn')) return;
 
     isDragging = true;
     const rect = popup.getBoundingClientRect();
@@ -428,14 +474,158 @@ function makeDraggable(popup) {
   }
 }
 
+// Global variable to track current market type
+let currentMarketType = 'multi'; // Start with multi-market by default
+
+// Function to switch between market types
+async function switchMarketType() {
+  console.log('🔄 [DEBUG] Current market type:', currentMarketType);
+
+  // Toggle market type
+  const newMarketType = currentMarketType === 'multi' ? 'single' : 'multi';
+  currentMarketType = newMarketType;
+
+  console.log('🔄 [DEBUG] Switching to:', newMarketType);
+
+  // Fetch new market data
+  const newMarketData = await fetchMarketDataWithType(newMarketType);
+
+  if (newMarketData && marketNotesPopup) {
+    // Get the current popup position
+    const currentRect = marketNotesPopup.getBoundingClientRect();
+
+    // Remove old popup
+    marketNotesPopup.remove();
+
+    // Create new popup with new data
+    marketNotesPopup = createMarketNotesPopup(newMarketData, 'tweet');
+    document.body.appendChild(marketNotesPopup);
+
+    // Restore position
+    marketNotesPopup.style.position = 'fixed';
+    marketNotesPopup.style.left = `${currentRect.left}px`;
+    marketNotesPopup.style.top = `${currentRect.top}px`;
+    marketNotesPopup.style.zIndex = '10000';
+
+    // Setup handlers for new popup
+    setupMarketNotesHandlers();
+
+    console.log('✅ [DEBUG] Successfully switched to', newMarketType, 'market type');
+  } else {
+    console.error('❌ [DEBUG] Failed to switch market type');
+    alert('Failed to switch market type. Please try again.');
+  }
+}
+
+// API functions using Chrome messaging (bypasses CORS/blocking)
+async function fetchMarketData() {
+  return fetchMarketDataWithType(currentMarketType);
+}
+
+// Enhanced function to fetch specific market type
+async function fetchMarketDataWithType(marketType) {
+  console.log('🔍 [DEBUG] Starting fetchMarketData via Chrome messaging...');
+
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({
+      action: 'fetchMarketData',
+      marketType: marketType
+    }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error('❌ [DEBUG] Chrome runtime error:', chrome.runtime.lastError);
+        resolve(null);
+        return;
+      }
+
+      console.log('🔍 [DEBUG] Got response from background:', response);
+
+      if (response && response.success && response.data) {
+        console.log('✅ [DEBUG] Successfully got market data!');
+        resolve(response.data);
+      } else {
+        console.error('❌ [DEBUG] Background script failed:', response?.error);
+        resolve(null);
+      }
+    });
+  });
+}
+
+async function fetchLivePrices() {
+  console.log('🔍 [DEBUG] Fetching live prices via Chrome messaging...');
+
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ action: 'fetchPrices' }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error('❌ [DEBUG] Chrome runtime error for prices:', chrome.runtime.lastError);
+        resolve(null);
+        return;
+      }
+
+      if (response && response.success && response.data) {
+        console.log('✅ [DEBUG] Got live prices!');
+        resolve(response.data);
+      } else {
+        console.error('❌ [DEBUG] Failed to get prices:', response?.error);
+        resolve(null);
+      }
+    });
+  });
+}
+
+async function executeTrade(side, amount, marketId = null) {
+  console.log(`🔍 [DEBUG] Executing trade: ${side} $${amount} ${marketId ? `for market ${marketId}` : ''} via Chrome messaging...`);
+
+  return new Promise((resolve, reject) => {
+    const message = {
+      action: 'executeTrade',
+      side: side,
+      amount: amount
+    };
+
+    if (marketId) {
+      message.market_id = marketId;
+    }
+
+    chrome.runtime.sendMessage(message, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error('❌ [DEBUG] Chrome runtime error for trade:', chrome.runtime.lastError);
+        resolve({ success: false, error: 'Chrome messaging failed' });
+        return;
+      }
+
+      console.log('🔍 [DEBUG] Trade response:', response);
+
+      if (response && response.success) {
+        console.log('✅ [DEBUG] Trade executed successfully!');
+        resolve(response.data || { success: true });
+      } else {
+        console.error('❌ [DEBUG] Trade failed:', response?.error);
+        resolve({ success: false, error: response?.error || 'Unknown error' });
+      }
+    });
+  });
+}
+
 // Function to setup market notes popup handlers
 function setupMarketNotesHandlers() {
   if (!marketNotesPopup) return;
 
   const closeBtn = marketNotesPopup.querySelector('.close-popup');
   const allMarketsBtn = marketNotesPopup.querySelector('.all-markets-btn');
-  const nextMarketBtn = marketNotesPopup.querySelector('.next-market-btn');
-  const carouselDots = marketNotesPopup.querySelectorAll('.carousel-dot');
+  const refreshPricesBtn = marketNotesPopup.querySelector('.refresh-prices-btn');
+  const tradingPanel = marketNotesPopup.querySelector('.trading-panel');
+  const executeTradeBtnEl = marketNotesPopup.querySelector('.execute-trade-btn');
+
+  // Check if this is a multi-market popup
+  const isMultiMarket = marketNotesPopup.querySelector('.multi-markets-container');
+
+  if (isMultiMarket) {
+    setupMultiMarketHandlers();
+  } else {
+    setupSingleMarketHandlers();
+  }
+
+  // Common handlers
 
   // Close handler
   if (closeBtn) {
@@ -445,139 +635,492 @@ function setupMarketNotesHandlers() {
     });
   }
 
-  // All Markets handler - show list of related markets
+  // Switch market type handler
+  const switchMarketBtn = marketNotesPopup.querySelector('.switch-market-btn');
+  if (switchMarketBtn) {
+    switchMarketBtn.addEventListener('click', async () => {
+      console.log('🔄 [DEBUG] Switching market type...');
+
+      // Show loading state
+      switchMarketBtn.disabled = true;
+      switchMarketBtn.innerHTML = '⏳';
+
+      // Switch to the other market type
+      await switchMarketType();
+
+      // Reset button
+      switchMarketBtn.disabled = false;
+      switchMarketBtn.innerHTML = '➡️';
+    });
+  }
+}
+
+// Function to setup single market handlers
+function setupSingleMarketHandlers() {
+  const allMarketsBtn = marketNotesPopup.querySelector('.all-markets-btn');
+  const refreshPricesBtn = marketNotesPopup.querySelector('.refresh-prices-btn');
+
+  // All Markets handler
   if (allMarketsBtn) {
     allMarketsBtn.addEventListener('click', () => {
-      showAllMarketsModal();
+      alert('📊 Market information loaded from data files.\n\nShowing current market data with real-time trading capabilities.');
     });
   }
 
-  // Next Market handler - cycle to next related market
-  if (nextMarketBtn) {
-    nextMarketBtn.addEventListener('click', () => {
-      showNextMarket();
-    });
-  }
+  // Refresh prices handler
+  if (refreshPricesBtn) {
+    refreshPricesBtn.addEventListener('click', async () => {
+      refreshPricesBtn.disabled = true;
+      refreshPricesBtn.innerHTML = '⏳';
 
-  // Carousel dots handlers
-  carouselDots.forEach(dot => {
-    dot.addEventListener('click', () => {
-      const marketIndex = parseInt(dot.dataset.marketIndex);
-      const selectedMarket = FAKE_MARKET_DATA[marketIndex];
-
-      if (selectedMarket) {
-        updateMarketNotesContent(selectedMarket);
-        updateCarouselDots(marketIndex);
+      const prices = await fetchLivePrices();
+      if (prices) {
+        if (prices.type === 'single') {
+          // Update single market prices
+          updateSingleMarketPrices(prices);
+        } else if (prices.type === 'multi') {
+          // Update multi-market prices
+          updateMultiMarketPrices(prices);
+        }
       }
+
+      refreshPricesBtn.disabled = false;
+      refreshPricesBtn.innerHTML = '🔄';
     });
-  });
+  }
 }
 
-// Function to show all markets modal
-function showAllMarketsModal() {
-  const modal = document.createElement('div');
-  modal.className = 'all-markets-modal';
-  modal.innerHTML = `
-    <div class="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Related Markets</h3>
-          <button class="modal-close">×</button>
-        </div>
-        <div class="markets-list">
-          ${FAKE_MARKET_DATA.map(market => `
-            <div class="market-item" data-market-id="${market.id}">
-              <h4>${market.title}</h4>
-              <div class="market-prices-mini">
-                <span class="yes-price">YES ${Math.round(market.yesPrice * 100)}¢</span>
-                <span class="no-price">NO ${Math.round(market.noPrice * 100)}¢</span>
-              </div>
-              <div class="market-volume-mini">Volume: ${market.volume}</div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    </div>
-  `;
+function updateSingleMarketPrices(prices) {
+  const yesBtn = marketNotesPopup.querySelector('.yes-side-btn');
+  const noBtn = marketNotesPopup.querySelector('.no-side-btn');
 
-  document.body.appendChild(modal);
+  if (yesBtn && noBtn) {
+    yesBtn.textContent = `YES ${Math.round(prices.yes_price * 100)}¢`;
+    noBtn.textContent = `NO ${Math.round(prices.no_price * 100)}¢`;
+    updateWinningsCalculation();
+  }
+}
 
-  // Add event handlers
-  const closeModal = () => {
-    modal.remove();
-  };
+function updateMultiMarketPrices(prices) {
+  prices.prices.forEach(marketPrice => {
+    const marketItem = marketNotesPopup.querySelector(`[data-market-id="${marketPrice.market_id}"]`);
+    if (marketItem) {
+      // Update the probability percentage in the collapsed view
+      const probabilityEl = marketItem.querySelector('.probability-percentage');
+      if (probabilityEl) {
+        const oddsPercentage = Math.round(marketPrice.yes_price * 100);
+        probabilityEl.textContent = `${oddsPercentage}%`;
+      }
 
-  modal.querySelector('.modal-close').addEventListener('click', closeModal);
-  modal.querySelector('.modal-overlay').addEventListener('click', (e) => {
-    if (e.target === modal.querySelector('.modal-overlay')) {
-      closeModal();
+      // Update the trading buttons if they exist (when market is expanded)
+      const yesBtn = marketItem.querySelector('.yes-side-btn');
+      const noBtn = marketItem.querySelector('.no-side-btn');
+      if (yesBtn) yesBtn.textContent = `YES ${Math.round(marketPrice.yes_price * 100)}¢`;
+      if (noBtn) noBtn.textContent = `NO ${Math.round(marketPrice.no_price * 100)}¢`;
     }
   });
+  updateWinningsCalculation();
+}
 
-  // Market selection handlers
-  modal.querySelectorAll('.market-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const marketId = parseInt(item.dataset.marketId);
-      const selectedMarket = FAKE_MARKET_DATA.find(m => m.id === marketId);
+// Function to setup multi-market handlers
+function setupMultiMarketHandlers() {
+  // Market item click handlers
+  const marketItems = marketNotesPopup.querySelectorAll('.multi-market-item');
 
-      if (selectedMarket) {
-        // Close modal
-        closeModal();
+  marketItems.forEach(item => {
+    const header = item.querySelector('.market-candidate-header');
+    header.addEventListener('click', () => {
+      const isCurrentlyActive = item.classList.contains('active');
 
-        // Update current popup with selected market
-        updateMarketNotesContent(selectedMarket);
+      // Remove active class from all items
+      marketItems.forEach(otherItem => otherItem.classList.remove('active'));
+
+      // If this item wasn't active, make it active and show trading interface
+      if (!isCurrentlyActive) {
+        item.classList.add('active');
+        showTradingInterface(item);
       }
+      // If it was active, clicking again closes it (no active market)
     });
   });
+
+  // No default trading handlers setup since no market is active initially
 }
 
-// Function to show next market
-function showNextMarket() {
-  const currentTitle = marketNotesPopup.querySelector('h4').textContent;
-  const currentIndex = FAKE_MARKET_DATA.findIndex(m => m.title === currentTitle);
-  const nextIndex = (currentIndex + 1) % FAKE_MARKET_DATA.length;
-  const nextMarket = FAKE_MARKET_DATA[nextIndex];
+// Function to show trading interface for selected market
+function showTradingInterface(marketItem) {
+  // Remove existing trading interfaces
+  const existingForms = marketNotesPopup.querySelectorAll('.trade-form');
+  existingForms.forEach(form => form.remove());
 
-  updateMarketNotesContent(nextMarket);
-  updateCarouselDots(nextIndex);
-}
+  const existingStatus = marketNotesPopup.querySelectorAll('.trade-status');
+  existingStatus.forEach(status => status.remove());
 
-// Function to update market notes content
-function updateMarketNotesContent(marketData) {
-  if (!marketNotesPopup) return;
+  const marketId = marketItem.dataset.marketId;
 
-  const content = marketNotesPopup.querySelector('.market-info');
-  content.innerHTML = `
-    <h4>${marketData.title}</h4>
-    <div class="market-chart">${marketData.chart}</div>
-    <div class="market-prices">
-      <div class="price-item yes">
-        <span class="price-label">YES</span>
-        <span class="price-value">${Math.round(marketData.yesPrice * 100)}¢</span>
+  // Get the percentage value to calculate the prices
+  const percentageEl = marketItem.querySelector('.probability-percentage');
+  const percentage = percentageEl ? parseInt(percentageEl.textContent) : 50;
+  const yesPrice = percentage; // Already in cents
+  const noPrice = 100 - percentage; // Calculate NO price
+
+  // Add trading interface to the active market
+  const tradingHTML = `
+    <div class="trade-form">
+      <div class="side-selector">
+        <button class="side-btn yes-side-btn active" data-side="YES" data-market-id="${marketId}">YES ${yesPrice}¢</button>
+        <button class="side-btn no-side-btn" data-side="NO" data-market-id="${marketId}">NO ${noPrice}¢</button>
       </div>
-      <div class="price-item no">
-        <span class="price-label">NO</span>
-        <span class="price-value">${Math.round(marketData.noPrice * 100)}¢</span>
+      <div class="amount-input-group">
+        <label>Amount (USD):</label>
+        <input type="text" class="amount-input" placeholder="$0" inputmode="decimal">
+        <div class="potential-winnings">
+          <span class="winnings-text">Potential payout: <span class="winnings-amount">$0.00</span></span>
+          <span class="profit-text">Profit: <span class="profit-amount">$0.00</span></span>
+        </div>
+      </div>
+      <div class="trade-buttons">
+        <button class="execute-trade-btn" data-market-id="${marketId}">Execute Trade</button>
       </div>
     </div>
-    <div class="market-volume">Volume: ${marketData.volume}</div>
-    <p class="market-description">${marketData.description}</p>
+    <div class="trade-status"></div>
   `;
+
+  marketItem.insertAdjacentHTML('beforeend', tradingHTML);
+
+  // Setup handlers for the new trading interface
+  setupTradingHandlers();
 }
 
-// Function to update carousel dots
-function updateCarouselDots(activeIndex) {
-  if (!marketNotesPopup) return;
+// Function to setup trading handlers (works for both single and multi-market)
+function setupTradingHandlers() {
+  // Remove existing handlers to avoid duplicates
+  const existingHandlers = marketNotesPopup.querySelectorAll('[data-handler-added]');
+  existingHandlers.forEach(element => {
+    element.removeAttribute('data-handler-added');
+  });
 
-  const dots = marketNotesPopup.querySelectorAll('.carousel-dot');
-  dots.forEach((dot, index) => {
-    if (index === activeIndex) {
-      dot.classList.add('active');
+  // Side selector button handlers - FIXED version
+  const sideBtns = marketNotesPopup.querySelectorAll('.side-btn:not([data-handler-added])');
+  console.log('🔍 [DEBUG] Found side buttons:', sideBtns.length);
+
+  sideBtns.forEach((btn, index) => {
+    btn.setAttribute('data-handler-added', 'true');
+    console.log(`🔍 [DEBUG] Setting up button ${index}:`, btn.dataset.side, btn.className);
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      console.log('🔍 [DEBUG] Button clicked:', btn.dataset.side);
+
+      // For multi-market, only affect buttons in the same market
+      const marketId = btn.dataset.marketId;
+      let buttonsToUpdate;
+
+      if (marketId) {
+        // Multi-market: only update buttons in the same market
+        buttonsToUpdate = marketNotesPopup.querySelectorAll(`.side-btn[data-market-id="${marketId}"]`);
+      } else {
+        // Single market: update all side buttons
+        buttonsToUpdate = marketNotesPopup.querySelectorAll('.side-btn');
+      }
+
+      buttonsToUpdate.forEach((b, i) => {
+        console.log(`🔍 [DEBUG] Before: button ${i} classes:`, b.className);
+        b.classList.remove('active');
+        console.log(`🔍 [DEBUG] After: button ${i} classes:`, b.className);
+      });
+
+      // Add active to clicked button
+      btn.classList.add('active');
+      console.log('🔍 [DEBUG] Final: clicked button classes:', btn.className);
+
+      // Clear trade status (find the right one for multi-market)
+      let tradeStatus;
+      if (marketId) {
+        const marketItem = marketNotesPopup.querySelector(`[data-market-id="${marketId}"]`);
+        tradeStatus = marketItem ? marketItem.querySelector('.trade-status') : null;
+      } else {
+        tradeStatus = marketNotesPopup.querySelector('.trade-status');
+      }
+      if (tradeStatus) tradeStatus.innerHTML = '';
+
+      // Recalculate winnings
+      updateWinningsCalculation();
+    });
+  });
+
+  // Dollar sign formatting functions
+  function formatDollarInput(value) {
+    // Remove all non-digit and non-decimal characters
+    let cleanValue = value.replace(/[^\d.]/g, '');
+
+    // Handle multiple decimal points - keep only the first one
+    const parts = cleanValue.split('.');
+    if (parts.length > 2) {
+      cleanValue = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    // Limit to 2 decimal places
+    if (cleanValue.includes('.')) {
+      const [whole, decimal] = cleanValue.split('.');
+      cleanValue = whole + '.' + decimal.substring(0, 2);
+    }
+
+    // Add dollar sign if there's a value
+    return cleanValue ? '$' + cleanValue : '';
+  }
+
+  function extractNumericValue(dollarString) {
+    // Remove dollar sign and parse as float
+    return parseFloat(dollarString.replace('$', '')) || 0;
+  }
+
+  // Amount input handler - real-time updates with dollar formatting
+  const amountInputs = marketNotesPopup.querySelectorAll('.amount-input:not([data-handler-added])');
+  amountInputs.forEach(amountInput => {
+    amountInput.setAttribute('data-handler-added', 'true');
+    console.log('🔍 [DEBUG] Setting up real-time input handlers with dollar formatting');
+
+    // Set initial value if empty
+    if (!amountInput.value) {
+      amountInput.value = '';
+    }
+
+    amountInput.addEventListener('input', (e) => {
+      const cursorPosition = e.target.selectionStart;
+      const oldValue = e.target.value;
+      const formatted = formatDollarInput(oldValue);
+
+      console.log('🔍 [DEBUG] Input formatting:', oldValue, '->', formatted);
+
+      if (formatted !== oldValue) {
+        e.target.value = formatted;
+        // Maintain cursor position, accounting for added/removed characters
+        const newPosition = Math.min(cursorPosition + (formatted.length - oldValue.length), formatted.length);
+        e.target.setSelectionRange(newPosition, newPosition);
+      }
+
+      updateWinningsCalculation();
+    });
+
+    amountInput.addEventListener('keydown', (e) => {
+      // Allow: backspace, delete, tab, escape, enter
+      if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+          // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+          (e.keyCode === 65 && e.ctrlKey === true) ||
+          (e.keyCode === 67 && e.ctrlKey === true) ||
+          (e.keyCode === 86 && e.ctrlKey === true) ||
+          (e.keyCode === 88 && e.ctrlKey === true) ||
+          // Allow: home, end, left, right
+          (e.keyCode >= 35 && e.keyCode <= 39)) {
+        return;
+      }
+      // Ensure that it is a number or decimal point and stop the keypress
+      if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) &&
+          (e.keyCode < 96 || e.keyCode > 105) &&
+          e.keyCode !== 190 && e.keyCode !== 110) {
+        e.preventDefault();
+      }
+    });
+
+    amountInput.addEventListener('focus', () => {
+      // If placeholder is showing, clear it and add $
+      if (amountInput.value === '' || amountInput.value === '$0') {
+        amountInput.value = '$';
+        // Position cursor after $
+        setTimeout(() => {
+          amountInput.setSelectionRange(1, 1);
+        }, 0);
+      }
+    });
+
+    amountInput.addEventListener('blur', () => {
+      // If only $ is left, clear the field
+      if (amountInput.value === '$') {
+        amountInput.value = '';
+      }
+      updateWinningsCalculation();
+    });
+
+    amountInput.addEventListener('paste', (e) => {
+      // Handle paste events
+      e.preventDefault();
+      const paste = (e.clipboardData || window.clipboardData).getData('text');
+      const formatted = formatDollarInput(paste);
+      amountInput.value = formatted;
+      updateWinningsCalculation();
+    });
+  });
+
+  // Enhanced winnings calculation function
+  function updateWinningsCalculation() {
+    // Find the active market (for multi-market support)
+    const activeMarketItem = marketNotesPopup.querySelector('.multi-market-item.active');
+    let activeSideBtn, amountInput, winningsAmount, profitAmount;
+
+    if (activeMarketItem) {
+      // Multi-market: get elements from active market
+      activeSideBtn = activeMarketItem.querySelector('.side-btn.active');
+      amountInput = activeMarketItem.querySelector('.amount-input');
+      winningsAmount = activeMarketItem.querySelector('.winnings-amount');
+      profitAmount = activeMarketItem.querySelector('.profit-amount');
     } else {
-      dot.classList.remove('active');
+      // Single market: get elements globally
+      activeSideBtn = marketNotesPopup.querySelector('.side-btn.active');
+      amountInput = marketNotesPopup.querySelector('.amount-input');
+      winningsAmount = marketNotesPopup.querySelector('.winnings-amount');
+      profitAmount = marketNotesPopup.querySelector('.profit-amount');
     }
+
+    // If no active elements found (no market selected), don't calculate
+    if (!activeSideBtn || !amountInput || !winningsAmount || !profitAmount) {
+      console.log('🔍 [DEBUG] No active market selected or elements missing for calculation');
+      return;
+    }
+
+    console.log('🔍 [DEBUG] === Starting winnings calculation ===');
+    console.log('🔍 [DEBUG] Active side btn:', activeSideBtn?.dataset.side, activeSideBtn?.className);
+    console.log('🔍 [DEBUG] Amount input value:', amountInput?.value);
+    console.log('🔍 [DEBUG] Winnings/profit elements found:', !!winningsAmount, !!profitAmount);
+
+    if (!activeSideBtn || !amountInput || !winningsAmount || !profitAmount) {
+      console.log('❌ [DEBUG] Missing required elements for calculation');
+      console.log('❌ [DEBUG] activeSideBtn:', !!activeSideBtn);
+      console.log('❌ [DEBUG] amountInput:', !!amountInput);
+      console.log('❌ [DEBUG] winningsAmount:', !!winningsAmount);
+      console.log('❌ [DEBUG] profitAmount:', !!profitAmount);
+      return;
+    }
+
+    const side = activeSideBtn.dataset.side;
+    const inputValue = amountInput.value.trim();
+    const amount = extractNumericValue(inputValue);
+
+    console.log('🔍 [DEBUG] Side:', side, 'Raw input:', inputValue, 'Parsed amount:', amount);
+
+    if (amount <= 0) {
+      winningsAmount.textContent = '$0.00';
+      profitAmount.textContent = '$0.00';
+      profitAmount.style.color = 'rgb(139, 152, 165)';
+      console.log('🔍 [DEBUG] Amount is 0 or invalid, showing $0.00');
+      return;
+    }
+
+    // Get current prices from side buttons
+    let yesPrice = 0.0665, noPrice = 0.9335; // fallback prices
+
+    const yesBtn = marketNotesPopup.querySelector('.yes-side-btn');
+    const noBtn = marketNotesPopup.querySelector('.no-side-btn');
+
+    if (yesBtn && noBtn) {
+      const yesText = yesBtn.textContent.match(/(\d+)¢/);
+      const noText = noBtn.textContent.match(/(\d+)¢/);
+
+      if (yesText && noText) {
+        yesPrice = parseFloat(yesText[1]) / 100;
+        noPrice = parseFloat(noText[1]) / 100;
+        console.log('🔍 [DEBUG] Extracted prices from buttons - YES:', yesPrice, 'NO:', noPrice);
+      } else {
+        console.log('🔍 [DEBUG] Could not parse prices from button text, using fallbacks');
+      }
+    } else {
+      console.log('🔍 [DEBUG] Side buttons not found, using fallback prices');
+    }
+
+    const price = side === 'YES' ? yesPrice : noPrice;
+    console.log(`🔍 [DEBUG] Using ${side} price: ${price}`);
+
+    // Calculate shares you'd get for your USD amount
+    const shares = amount / price;
+
+    // If you win, each share is worth $1, so total payout is number of shares
+    const totalPayout = shares;
+    const profit = totalPayout - amount;
+
+    console.log(`🔍 [DEBUG] Final calculation: Shares=${shares.toFixed(4)}, Payout=$${totalPayout.toFixed(2)}, Profit=$${profit.toFixed(2)}`);
+
+    // Update display
+    winningsAmount.textContent = `$${totalPayout.toFixed(2)}`;
+    profitAmount.textContent = `$${profit.toFixed(2)}`;
+
+    // Update profit color based on positive/negative
+    if (profit >= 0) {
+      profitAmount.style.color = 'rgb(0, 186, 124)'; // green for profit
+    } else {
+      profitAmount.style.color = 'rgb(249, 24, 128)'; // red for loss
+    }
+
+    console.log('🔍 [DEBUG] === Calculation complete ===\n');
+  }
+
+  // Execute trade handlers
+  const executeTradeBtns = marketNotesPopup.querySelectorAll('.execute-trade-btn:not([data-handler-added])');
+  executeTradeBtns.forEach(executeTradeBtnEl => {
+    executeTradeBtnEl.setAttribute('data-handler-added', 'true');
+
+    executeTradeBtnEl.addEventListener('click', async () => {
+      const marketId = executeTradeBtnEl.dataset.marketId;
+
+      // Find the right elements based on whether this is single or multi-market
+      let activeSideBtn, amountInput, statusEl, profitAmountEl;
+
+      if (marketId) {
+        // Multi-market: find elements within the specific market
+        const marketItem = marketNotesPopup.querySelector(`[data-market-id="${marketId}"]`);
+        if (!marketItem) return;
+
+        activeSideBtn = marketItem.querySelector('.side-btn.active');
+        amountInput = marketItem.querySelector('.amount-input');
+        statusEl = marketItem.querySelector('.trade-status');
+        profitAmountEl = marketItem.querySelector('.profit-amount');
+      } else {
+        // Single market: find elements globally
+        activeSideBtn = marketNotesPopup.querySelector('.side-btn.active');
+        amountInput = marketNotesPopup.querySelector('.amount-input');
+        statusEl = marketNotesPopup.querySelector('.trade-status');
+        profitAmountEl = marketNotesPopup.querySelector('.profit-amount');
+      }
+
+      if (!activeSideBtn) {
+        statusEl.innerHTML = '<div class="error">Please select YES or NO</div>';
+        return;
+      }
+
+      const side = activeSideBtn.dataset.side;
+      const amount = extractNumericValue(amountInput.value);
+
+      if (!amount || amount <= 0) {
+        statusEl.innerHTML = '<div class="error">Please enter a valid amount</div>';
+        return;
+      }
+
+      executeTradeBtnEl.disabled = true;
+      executeTradeBtnEl.textContent = 'Executing...';
+      statusEl.innerHTML = '<div class="loading">Placing order...</div>';
+
+      const result = await executeTrade(side, amount, marketId);
+
+      if (result.success) {
+        const profitAmount = profitAmountEl ? profitAmountEl.textContent : '$0.00';
+        const candidate = marketId ? ` for ${activeSideBtn.closest('[data-market-id]').querySelector('h5').textContent}` : '';
+        statusEl.innerHTML = `<div class="success">✅ Trade executed! Bought ${side}${candidate} for $${amount}<br/>Potential profit: ${profitAmount}</div>`;
+
+        // Clear the form after successful trade
+        amountInput.value = '';
+        updateWinningsCalculation();
+      } else {
+        statusEl.innerHTML = `<div class="error">❌ Trade failed: ${result.error}</div>`;
+      }
+
+      executeTradeBtnEl.disabled = false;
+      executeTradeBtnEl.textContent = 'Execute Trade';
+    });
   });
 }
+
+// All fake market functions removed - only using real samplein.json data
 
 // Function to position popup
 function positionPopup(popup, buttonRect) {
@@ -646,21 +1189,41 @@ function injectPolymarketButtons() {
 
     // Add click handler to the actual button inside the container
     const actualButton = polyButton.querySelector('button');
-    actualButton.addEventListener('click', (e) => {
+    actualButton.addEventListener('click', async (e) => {
+      console.log('🎯 [DEBUG] Polymarket button clicked!');
       e.preventDefault();
       e.stopPropagation();
 
       // Close existing popup if open
       if (marketNotesPopup) {
+        console.log('🔍 [DEBUG] Closing existing popup');
         marketNotesPopup.remove();
         marketNotesPopup = null;
       }
 
-      // Get random market data for demo
-      const randomMarket = FAKE_MARKET_DATA[Math.floor(Math.random() * FAKE_MARKET_DATA.length)];
+      // Show loading state
+      console.log('🔍 [DEBUG] Setting loading state');
+      actualButton.innerHTML = '<div style="color: rgb(139, 152, 165);">⏳</div>';
+      actualButton.disabled = true;
 
-      // Create and show popup
-      marketNotesPopup = createMarketNotesPopup(randomMarket, 'tweet');
+      // Fetch real market data from samplein.json via backend
+      console.log('🔍 [DEBUG] Starting to fetch market data...');
+      let marketData = await fetchMarketData();
+
+      if (!marketData) {
+        console.error('❌ [DEBUG] No market data received - showing error');
+        // Show detailed error
+        alert('❌ Trading backend not available.\n\nDebugging info:\n- Check Chrome DevTools console for detailed errors\n- Ensure backend is running: ./start_trading.sh\n- Backend should be at http://127.0.0.1:5000');
+        actualButton.innerHTML = `<img src="${chrome.runtime.getURL('icons/pmarket.png')}" alt="Polymarket" width="20" height="20" style="border-radius: 2px; opacity: 0.8;" />`;
+        actualButton.disabled = false;
+        return;
+      }
+
+      console.log('✅ [DEBUG] Got market data, creating popup...');
+      console.log('🔍 [DEBUG] Market data:', marketData);
+
+      // Create and show popup with real market data
+      marketNotesPopup = createMarketNotesPopup(marketData, 'tweet');
       document.body.appendChild(marketNotesPopup);
 
       // Position popup
@@ -669,6 +1232,12 @@ function injectPolymarketButtons() {
 
       // Add event handlers
       setupMarketNotesHandlers();
+
+      // Reset button
+      actualButton.innerHTML = `<img src="${chrome.runtime.getURL('icons/pmarket.png')}" alt="Polymarket" width="20" height="20" style="border-radius: 2px; opacity: 0.8;" />`;
+      actualButton.disabled = false;
+
+      console.log('✅ [DEBUG] Popup created and displayed successfully!');
     });
 
     // Insert the Polymarket button as the first child in the main container
@@ -719,4 +1288,21 @@ observer.observe(document.body, {
   subtree: true
 });
 
-console.log('Polymarket Notes extension loaded');
+console.log('🚀 Polymarket Notes extension loaded with debugging');
+
+// Test function to check backend connectivity
+async function testBackendConnection() {
+  console.log('🧪 [TEST] Testing backend connection...');
+  const result = await fetchMarketData();
+  if (result) {
+    console.log('✅ [TEST] Backend is working! Market:', result.question);
+  } else {
+    console.error('❌ [TEST] Backend connection failed');
+  }
+}
+
+// Test backend connection on load
+setTimeout(() => {
+  console.log('🔍 [DEBUG] Running automatic backend test in 3 seconds...');
+  testBackendConnection();
+}, 3000);

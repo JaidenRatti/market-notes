@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Navigation Fix</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        button { padding: 10px 15px; margin: 5px; }
+        .debug { color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Navigation Fix Test</h1>
+    
+    <div class="test-section">
+        <h3>Test Case 1: Multi-Market to Single Market Navigation</h3>
+        <p>Steps to test:</p>
+        <ol>
+            <li>Open a multi-market popup (should show ⬅️ arrow)</li>
+            <li>Click the left arrow button</li>
+            <li>Should navigate to single market view (arrow becomes ➡️)</li>
+        </ol>
+        <div class="debug">
+            Expected behavior: ⬅️ in multi-market → click → ➡️ in single market
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Case 2: Single Market to Multi-Market Navigation</h3>
+        <p>Steps to test:</p>
+        <ol>
+            <li>From single market popup (should show ➡️ arrow)</li>
+            <li>Click the right arrow button</li>
+            <li>Should navigate to multi-market view (arrow becomes ⬅️)</li>
+        </ol>
+        <div class="debug">
+            Expected behavior: ➡️ in single market → click → ⬅️ in multi-market
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h3>Key Changes Made:</h3>
+        <ul>
+            <li>✅ Dynamic arrow button generation based on market type</li>
+            <li>✅ Improved state detection from actual popup content</li>
+            <li>✅ Fixed currentMarketType initialization</li>
+            <li>✅ Enhanced debugging output</li>
+            <li>✅ Simplified button handler logic</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h3>Debug Console Output</h3>
+        <p>Check browser console for debug messages starting with:</p>
+        <ul>
+            <li><code>🔄 [DEBUG] createMarketNotesPopup: marketData.type =</code></li>
+            <li><code>🔄 [DEBUG] Actually showing multi-market popup:</code></li>
+            <li><code>🔄 [DEBUG] Switching to:</code></li>
+        </ul>
+    </div>
+
+    <script>
+        console.log('🔧 Navigation test page loaded. Open the browser extension and test the arrow functionality.');
+    </script>
+</body>
+</html>

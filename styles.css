@@ -406,8 +406,38 @@
   padding: 4px 0;
 }
 
+.positions-track.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 120px;
+}
+
 .positions-track.hidden {
-  display: none;
+  display: none !important;
+}
+
+.empty-state-content {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgb(113, 118, 123);
+}
+
+.empty-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.empty-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: rgb(113, 118, 123);
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: rgb(113, 118, 123);
 }
 
 .position-card {

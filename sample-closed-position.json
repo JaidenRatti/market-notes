@@ -1,0 +1,18 @@
+{
+    "proxyWallet": "0x21ea695f8b15c726b1f23278b2756e9824542b90",
+    "asset": "42541673615301895829890290486226257940966769125829226067368474110048691276042",
+    "conditionId": "0xd7bd58d09efa1ff15be61cf30587e79444971ab125d55b2a88bf6ec04623a0d8",
+    "avgPrice": 0.996,
+    "totalBought": 10.04,
+    "realizedPnl": -0.02008,
+    "curPrice": 0.995,
+    "title": "Will Curtis Sliwa win the 2025 NYC mayoral election?",
+    "slug": "will-curtis-sliwa-win-the-2025-nyc-mayoral-election",
+    "icon": "https://polymarket-upload.s3.us-east-2.amazonaws.com/will-curtis-sliwa-win-the-2025-nyc-mayoral-election-2j1MODhPMJeg.jpg",
+    "eventSlug": "new-york-city-mayoral-election",
+    "outcome": "No",
+    "outcomeIndex": 1,
+    "oppositeOutcome": "Yes",
+    "oppositeAsset": "106645483208866512069057468273735379467092160028743318106715987586591689242591",
+    "endDate": "2025-11-04"
+  }

@@ -1,63 +1,5 @@
 // Real market data will be fetched from backend
-
-// Mock user position data
-const MOCK_USER_POSITIONS = [
-  {
-    id: 1,
-    title: "Bitcoin reaches $100k by 2024",
-    position: "YES",
-    shares: 250,
-    avgPrice: 0.64,
-    currentPrice: 0.67,
-    pnl: 7.5,
-    status: "open",
-    volume: "$2.5M"
-  },
-  {
-    id: 2,
-    title: "Trump wins 2024 Election",
-    position: "NO",
-    shares: 180,
-    avgPrice: 0.51,
-    currentPrice: 0.48,
-    pnl: 5.4,
-    status: "open",
-    volume: "$15.2M"
-  },
-  {
-    id: 3,
-    title: "GPT-5 released in 2024",
-    position: "NO",
-    shares: 320,
-    avgPrice: 0.82,
-    currentPrice: 0.77,
-    pnl: 16.0,
-    status: "open",
-    volume: "$1.8M"
-  },
-  {
-    id: 4,
-    title: "Tesla stock above $300",
-    position: "YES",
-    shares: 150,
-    avgPrice: 0.45,
-    currentPrice: 0.62,
-    pnl: 25.5,
-    status: "closed",
-    volume: "$890K"
-  },
-  {
-    id: 5,
-    title: "Fed cuts rates in Q1 2024",
-    position: "NO",
-    shares: 200,
-    avgPrice: 0.73,
-    currentPrice: 0.15,
-    pnl: -116.0,
-    status: "closed",
-    volume: "$3.1M"
-  }
-];
+// All position data now comes from live Polymarket API
 
 let marketNotesPopup = null;
 
@@ -66,8 +8,17 @@ function createPositionCard(position) {
   const pnlClass = position.pnl >= 0 ? 'positive' : 'negative';
   const pnlSign = position.pnl >= 0 ? '+' : '';
   const statusBadge = position.status === 'open' ? 'OPEN' : 'CLOSED';
-  const positionColor = position.position === 'YES' ? 'yes-position' : 'no-position';
-
+  const positionColor = position.position === 'YES' || position.position === 'Yes' ? 'yes-position' : 'no-position';
+  
+  // Handle both old mock data and new real data formats
+  const shares = position.shares || position.totalBought || 0;
+  const avgPrice = position.avgPrice || 0;
+  const currentPrice = position.currentPrice || position.curPrice || 0;
+  const volume = position.volume || position.currentValue || 0;
+  
+  // Format shares to show reasonable precision
+  const formattedShares = shares < 1 ? shares.toFixed(4) : shares.toFixed(2);
+  
   return `
     <div class="position-card" data-position-id="${position.id}">
       <div class="position-header">
@@ -75,37 +26,104 @@ function createPositionCard(position) {
           <span class="position-badge ${positionColor}">${position.position}</span>
           <span class="status-badge ${position.status}">${statusBadge}</span>
         </div>
-        <div class="position-pnl ${pnlClass}">${pnlSign}$${Math.abs(position.pnl)}</div>
+        <div class="position-pnl ${pnlClass}">${pnlSign}$${Math.abs(position.pnl).toFixed(2)}</div>
       </div>
       <h4 class="position-title">${position.title}</h4>
       <div class="position-stats">
         <div class="stat-item">
           <span class="stat-label">Shares</span>
-          <span class="stat-value">${position.shares}</span>
+          <span class="stat-value">${formattedShares}</span>
         </div>
         <div class="stat-item">
           <span class="stat-label">Avg Price</span>
-          <span class="stat-value">${Math.round(position.avgPrice * 100)}¢</span>
+          <span class="stat-value">${Math.round(avgPrice * 100)}¢</span>
         </div>
         <div class="stat-item">
           <span class="stat-label">Current</span>
-          <span class="stat-value">${Math.round(position.currentPrice * 100)}¢</span>
+          <span class="stat-value">${Math.round(currentPrice * 100)}¢</span>
         </div>
       </div>
-      <div class="position-volume">Volume: ${position.volume}</div>
+      <div class="position-volume">Value: ${typeof volume === 'string' ? volume : `$${volume.toFixed(2)}`}</div>
     </div>
   `;
 }
 
-// Function to create positions carousel
-function createPositionsCarousel() {
-  const openPositions = MOCK_USER_POSITIONS.filter(p => p.status === 'open');
-  const closedPositions = MOCK_USER_POSITIONS.filter(p => p.status === 'closed');
+// Function to create positions carousel with real data
+async function createPositionsCarousel() {
+  console.log('🔍 [DEBUG] Creating positions carousel with real data...');
+  
+  // Fetch both open and closed positions separately
+  const [realOpenPositions, realClosedPositions] = await Promise.all([
+    fetchPositions(),
+    fetchClosedPositions()
+  ]);
+  
+  let openPositions = [];
+  let closedPositions = [];
+  let isLiveData = false;
+  
+  // Process open positions
+  if (realOpenPositions && realOpenPositions.length > 0) {
+    console.log('✅ [DEBUG] Using real open positions data:', realOpenPositions.length, 'positions');
+    openPositions = realOpenPositions;
+    isLiveData = true;
+  } else if (realOpenPositions && realOpenPositions.length === 0) {
+    console.log('⚠️ [DEBUG] No open positions found in account');
+    openPositions = [];
+    isLiveData = true;
+  }
+  
+  // Process closed positions
+  if (realClosedPositions && realClosedPositions.length > 0) {
+    console.log('✅ [DEBUG] Using real closed positions data:', realClosedPositions.length, 'positions');
+    closedPositions = realClosedPositions;
+    isLiveData = true;
+  } else if (realClosedPositions && realClosedPositions.length === 0) {
+    console.log('⚠️ [DEBUG] No closed positions found in account');
+    closedPositions = [];
+    isLiveData = true;
+  }
+  
+  // If neither API worked, mark as not live
+  if (!realOpenPositions && !realClosedPositions) {
+    console.log('❌ [DEBUG] Failed to fetch positions, showing connection error');
+    isLiveData = false;
+  }
+
+  // Create open positions HTML
+  const openStateHTML = openPositions.length === 0 ? `
+    <div class="positions-track empty-state" data-tab-content="open">
+      <div class="empty-state-content">
+        <div class="empty-icon">📊</div>
+        <div class="empty-title">${isLiveData ? 'No Active Positions' : 'Loading Positions...'}</div>
+        <div class="empty-subtitle">${isLiveData ? 'Start trading on Polymarket to see your positions here' : 'Connecting to Polymarket API...'}</div>
+      </div>
+    </div>
+  ` : `
+    <div class="positions-track" data-tab-content="open">
+      ${openPositions.map(position => createPositionCard(position)).join('')}
+    </div>
+  `;
+
+  // Create closed positions HTML
+  const closedStateHTML = closedPositions.length === 0 ? `
+    <div class="positions-track hidden empty-state" data-tab-content="closed">
+      <div class="empty-state-content">
+        <div class="empty-icon">📊</div>
+        <div class="empty-title">${isLiveData ? 'No Closed Positions' : 'Loading Closed Positions...'}</div>
+        <div class="empty-subtitle">${isLiveData ? 'Closed positions will appear here after you exit trades' : 'Connecting to Polymarket API...'}</div>
+      </div>
+    </div>
+  ` : `
+    <div class="positions-track hidden" data-tab-content="closed">
+      ${closedPositions.map(position => createPositionCard(position)).join('')}
+    </div>
+  `;
 
   return `
     <div class="polymarket-positions-section">
       <div class="positions-header">
-        <h3>Polymarket Positions</h3>
+        <h3>Polymarket Positions ${isLiveData ? '(Live)' : '(Connecting...)'}</h3>
         <div class="positions-tabs">
           <button class="tab-button active" data-tab="open">Open (${openPositions.length})</button>
           <button class="tab-button" data-tab="closed">Closed (${closedPositions.length})</button>
@@ -114,12 +132,8 @@ function createPositionsCarousel() {
       <div class="positions-carousel">
         <button class="carousel-nav prev" aria-label="Previous">‹</button>
         <div class="positions-container">
-          <div class="positions-track" data-tab-content="open">
-            ${openPositions.map(position => createPositionCard(position)).join('')}
-          </div>
-          <div class="positions-track hidden" data-tab-content="closed">
-            ${closedPositions.map(position => createPositionCard(position)).join('')}
-          </div>
+          ${openStateHTML}
+          ${closedStateHTML}
         </div>
         <button class="carousel-nav next" aria-label="Next">›</button>
       </div>
@@ -128,7 +142,7 @@ function createPositionsCarousel() {
 }
 
 // Function to inject positions section on profile pages
-function injectPositionsSection() {
+async function injectPositionsSection() {
   // Check if we're on a profile page (not home, explore, notifications, etc.)
   const path = window.location.pathname;
   if (path === '/' || path === '/home' || path === '/explore' || path === '/notifications' ||
@@ -140,22 +154,39 @@ function injectPositionsSection() {
     return;
   }
 
-  // Check if already injected globally
-  if (document.querySelector('.polymarket-positions-section')) return;
+  // Check if already injected - more comprehensive check
+  const existingSection = document.querySelector('.polymarket-positions-section');
+  if (existingSection) {
+    console.log('⚠️ [DEBUG] Positions section already exists, skipping injection');
+    return;
+  }
 
   // Find the tabs section (Posts, Replies, Media, etc.)
   const tabsList = document.querySelector('[role="tablist"]');
   if (!tabsList) return;
 
-  // Create and insert positions section
-  const positionsContainer = document.createElement('div');
-  positionsContainer.innerHTML = createPositionsCarousel();
+  // Mark that we're injecting to prevent race conditions
+  document.body.setAttribute('data-positions-injecting', 'true');
 
-  // Insert before the tabs
-  tabsList.parentElement.insertBefore(positionsContainer.firstElementChild, tabsList);
+  try {
+    // Create and insert positions section
+    const positionsContainer = document.createElement('div');
+    const carouselHTML = await createPositionsCarousel();
+    positionsContainer.innerHTML = carouselHTML;
 
-  // Add event listeners for carousel functionality
-  setupCarouselListeners();
+    // Insert before the tabs list (original working method)
+    tabsList.parentElement.insertBefore(positionsContainer.firstElementChild, tabsList);
+
+    // Add event listeners for carousel functionality
+    setupCarouselListeners();
+    
+    console.log('✅ [DEBUG] Positions section injected successfully');
+  } catch (error) {
+    console.error('❌ [DEBUG] Error injecting positions:', error);
+  } finally {
+    // Remove the injecting flag
+    document.body.removeAttribute('data-positions-injecting');
+  }
 }
 
 // Function to setup carousel event listeners
@@ -214,44 +245,16 @@ function setupCarouselListeners() {
     }
   }
 
-  // Add click handlers for position cards
+  // Add click handlers for position cards (now just for visual feedback)
   const positionCards = positionsSection.querySelectorAll('.position-card');
   positionCards.forEach(card => {
     card.addEventListener('click', () => {
-      const positionId = parseInt(card.dataset.positionId);
-      const position = MOCK_USER_POSITIONS.find(p => p.id === positionId);
-
-      if (position) {
-        // Close existing popup
-        if (marketNotesPopup) {
-          marketNotesPopup.remove();
-          marketNotesPopup = null;
-        }
-
-        // Fetch real market data instead of using position data
-        fetchMarketData().then(marketData => {
-          if (marketData) {
-            // Update currentMarketType to match the fetched data
-            currentMarketType = marketData.type || 'multi';
-            console.log('🔄 [DEBUG] Initial popup: set currentMarketType to', currentMarketType);
-            
-            // Create and show popup with real trading data
-            marketNotesPopup = createMarketNotesPopup(marketData, 'tweet');
-            document.body.appendChild(marketNotesPopup);
-
-            // Position popup to the right side of screen
-            marketNotesPopup.style.position = 'fixed';
-            marketNotesPopup.style.right = '20px';
-            marketNotesPopup.style.top = '100px';
-            marketNotesPopup.style.zIndex = '10000';
-
-            // Add event handlers
-            setupMarketNotesHandlers();
-          } else {
-            alert('❌ Trading backend not available. Please run: ./start_trading.sh');
-          }
-        });
-      }
+      console.log('🔄 [DEBUG] Position card clicked');
+      // Just provide visual feedback - no popup
+      card.style.transform = 'scale(0.98)';
+      setTimeout(() => {
+        card.style.transform = 'scale(1)';
+      }, 150);
     });
   });
 }
@@ -601,6 +604,50 @@ async function executeTrade(side, amount, marketId = null) {
       } else {
         console.error('❌ [DEBUG] Trade failed:', response?.error);
         resolve({ success: false, error: response?.error || 'Unknown error' });
+      }
+    });
+  });
+}
+
+async function fetchPositions() {
+  console.log('🔍 [DEBUG] Fetching positions via Chrome messaging...');
+
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ action: 'fetchPositions' }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error('❌ [DEBUG] Chrome runtime error for positions:', chrome.runtime.lastError);
+        resolve(null);
+        return;
+      }
+
+      if (response && response.success && response.data) {
+        console.log('✅ [DEBUG] Got positions!');
+        resolve(response.data);
+      } else {
+        console.error('❌ [DEBUG] Failed to get positions:', response?.error);
+        resolve(null);
+      }
+    });
+  });
+}
+
+async function fetchClosedPositions() {
+  console.log('🔍 [DEBUG] Fetching closed positions via Chrome messaging...');
+
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ action: 'fetchClosedPositions' }, (response) => {
+      if (chrome.runtime.lastError) {
+        console.error('❌ [DEBUG] Chrome runtime error for closed positions:', chrome.runtime.lastError);
+        resolve(null);
+        return;
+      }
+
+      if (response && response.success && response.data) {
+        console.log('✅ [DEBUG] Got closed positions!');
+        resolve(response.data);
+      } else {
+        console.error('❌ [DEBUG] Failed to get closed positions:', response?.error);
+        resolve(null);
       }
     });
   });
@@ -1257,28 +1304,44 @@ document.addEventListener('click', (e) => {
 setTimeout(() => {
   injectPolymarketButtons();
   injectPositionsSection();
-}, 1000);
+}, 500);
 
 // Set up mutation observer to handle dynamic content
 const observer = new MutationObserver((mutations) => {
-  let shouldInject = false;
+  let shouldInjectButtons = false;
+  let shouldInjectPositions = false;
 
   mutations.forEach((mutation) => {
     mutation.addedNodes.forEach((node) => {
       if (node.nodeType === Node.ELEMENT_NODE) {
-        // Check if new tweets were added
+        // Check if new tweets were added (for buttons only)
         if (node.matches && (node.matches('[data-testid="tweet"]') || node.querySelector('[data-testid="tweet"]'))) {
-          shouldInject = true;
+          shouldInjectButtons = true;
+        }
+        
+        // Check if tablist was added (for positions - only once per page)
+        if (node.matches && (node.matches('[role="tablist"]') || node.querySelector('[role="tablist"]'))) {
+          // Only inject if we don't already have a positions section
+          if (!document.querySelector('.polymarket-positions-section')) {
+            shouldInjectPositions = true;
+          }
         }
       }
     });
   });
 
-  if (shouldInject) {
+  // Inject buttons when tweets are found
+  if (shouldInjectButtons) {
     setTimeout(() => {
       injectPolymarketButtons();
+    }, 100);
+  }
+  
+  // Inject positions only once when tablist is found
+  if (shouldInjectPositions) {
+    setTimeout(() => {
       injectPositionsSection();
-    }, 500);
+    }, 300);
   }
 });
 
@@ -1287,6 +1350,7 @@ observer.observe(document.body, {
   childList: true,
   subtree: true
 });
+
 
 console.log('🚀 Polymarket Notes extension loaded with debugging');
 

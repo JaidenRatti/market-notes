@@ -41,6 +41,32 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
     return true;
   }
+
+  if (request.action === 'fetchPositions') {
+    fetchPositionsBackground()
+      .then(data => {
+        console.log('✅ [BACKGROUND] Got positions:', data);
+        sendResponse({ success: true, data });
+      })
+      .catch(error => {
+        console.error('❌ [BACKGROUND] Positions error:', error);
+        sendResponse({ success: false, error: error.message });
+      });
+    return true;
+  }
+
+  if (request.action === 'fetchClosedPositions') {
+    fetchClosedPositionsBackground()
+      .then(data => {
+        console.log('✅ [BACKGROUND] Got closed positions:', data);
+        sendResponse({ success: true, data });
+      })
+      .catch(error => {
+        console.error('❌ [BACKGROUND] Closed positions error:', error);
+        sendResponse({ success: false, error: error.message });
+      });
+    return true;
+  }
 });
 
 async function fetchMarketDataBackground() {
@@ -129,4 +155,80 @@ async function executeTradeBackground(side, amount, marketId = null) {
   }
 
   throw new Error('Failed to execute trade');
+}
+
+async function fetchPositionsBackground() {
+  const urls = ['http://127.0.0.1:5000/api/positions', 'http://localhost:5000/api/positions'];
+
+  for (const url of urls) {
+    try {
+      console.log(`🔍 [BACKGROUND] Fetching positions from ${url}`);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      console.log(`🔍 [BACKGROUND] Positions response status: ${response.status}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log(`🔍 [BACKGROUND] Got positions data:`, data);
+
+      if (data.success && data.positions) {
+        console.log(`✅ [BACKGROUND] Success! Returning ${data.positions.length} positions`);
+        return data.positions;
+      } else {
+        console.log(`❌ [BACKGROUND] Positions data format wrong:`, data);
+      }
+    } catch (error) {
+      console.error(`❌ [BACKGROUND] Failed ${url}:`, error.message);
+      console.error(`❌ [BACKGROUND] Full error:`, error);
+    }
+  }
+
+  console.error('❌ [BACKGROUND] All positions URLs failed');
+  throw new Error('All backend URLs failed');
+}
+
+async function fetchClosedPositionsBackground() {
+  const urls = ['http://127.0.0.1:5000/api/closed-positions', 'http://localhost:5000/api/closed-positions'];
+
+  for (const url of urls) {
+    try {
+      console.log(`🔍 [BACKGROUND] Fetching closed positions from ${url}`);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      console.log(`🔍 [BACKGROUND] Closed positions response status: ${response.status}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log(`🔍 [BACKGROUND] Got closed positions data:`, data);
+
+      if (data.success && data.positions) {
+        console.log(`✅ [BACKGROUND] Success! Returning ${data.positions.length} closed positions`);
+        return data.positions;
+      } else {
+        console.log(`❌ [BACKGROUND] Closed positions data format wrong:`, data);
+      }
+    } catch (error) {
+      console.error(`❌ [BACKGROUND] Failed ${url}:`, error.message);
+      console.error(`❌ [BACKGROUND] Full error:`, error);
+    }
+  }
+
+  console.error('❌ [BACKGROUND] All closed positions URLs failed');
+  throw new Error('All backend URLs failed');
 }

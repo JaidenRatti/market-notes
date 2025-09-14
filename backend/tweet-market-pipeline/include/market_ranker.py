@@ -254,7 +254,8 @@ def format_top_markets_json(
     top_markets: List[MarketRelevanceScore]
 ) -> Dict[str, Any]:
     """
-    Format the top markets into a clean, easy-to-parse JSON structure
+    DEPRECATED: Old format function that transforms API objects
+    Use format_original_api_with_metadata() instead for preserving original format
     """
     
     formatted_markets = []
@@ -318,6 +319,66 @@ def format_top_markets_json(
             "ranking_method": "AI-powered relevance scoring using Cohere"
         },
         "top_relevant_markets": formatted_markets
+    }
+    
+    return result
+
+def format_original_api_with_metadata(
+    tweet_text: str,
+    sentiment_analysis: Dict[str, Any],
+    top_markets: List[MarketRelevanceScore]
+) -> Dict[str, Any]:
+    """
+    NEW: Format results preserving original Polymarket API structure
+    Returns raw API objects with AI metadata as separate information
+    
+    Args:
+        tweet_text: Original tweet text
+        sentiment_analysis: Sentiment analysis results
+        top_markets: Ranked markets with AI scores
+        
+    Returns:
+        Dict with original API events + separate AI metadata
+    """
+    
+    # Extract original API objects (unchanged)
+    polymarket_events = []
+    relevance_metadata = []
+    
+    for rank, market_score in enumerate(top_markets, 1):
+        # Original Polymarket API object - UNCHANGED
+        original_market = market_score.market_data.copy()  # Preserve all original fields
+        polymarket_events.append(original_market)
+        
+        # AI relevance metadata - SEPARATE
+        relevance_metadata.append({
+            "market_id": market_score.market_id,
+            "rank": rank,
+            "relevance_score": market_score.relevance_score,
+            "relevance_explanation": market_score.relevance_explanation,
+            "key_matches": market_score.key_matches
+        })
+    
+    # Final structure - Option 1 format
+    result = {
+        "tweet_analysis": {
+            "original_tweet": {
+                "text": tweet_text,
+                "author": "TwitterUser",  # Could be passed as parameter
+                "timestamp": "2025-09-14T08:54:44Z"
+            },
+            "sentiment_analysis": sentiment_analysis,
+            "search_query": sentiment_analysis.get("search_query", ""),
+            "key_topics": sentiment_analysis.get("key_topics", []),
+            "sentiment_score": sentiment_analysis.get("sentiment_score", 0.0)
+        },
+        "events": polymarket_events,  # ✅ Original Polymarket API format
+        "relevance_metadata": relevance_metadata,  # ✅ AI scores as separate array
+        "search_metadata": {
+            "total_events_found": len(polymarket_events),
+            "ranking_method": "AI-powered relevance scoring using Cohere",
+            "search_timestamp": "2025-09-14T08:54:44Z"
+        }
     }
     
     return result

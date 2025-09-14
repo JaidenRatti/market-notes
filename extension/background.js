@@ -30,7 +30,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === 'executeTrade') {
-    executeTradeBackground(request.side, request.amount, request.market_id)
+    console.log('🔍 [BACKGROUND] Execute trade request:', request);
+    executeTradeBackground(request.side, request.amount, request.market_id, request.yes_token_id, request.no_token_id)
       .then(data => {
         console.log('✅ [BACKGROUND] Trade executed:', data);
         sendResponse({ success: true, data });
@@ -161,7 +162,7 @@ async function fetchPricesBackground() {
   throw new Error('Failed to fetch prices');
 }
 
-async function executeTradeBackground(side, amount, marketId = null) {
+async function executeTradeBackground(side, amount, marketId = null, yesTokenId = null, noTokenId = null) {
   const urls = ['http://127.0.0.1:5000/api/trade', 'http://localhost:5000/api/trade'];
 
   for (const url of urls) {
@@ -170,6 +171,14 @@ async function executeTradeBackground(side, amount, marketId = null) {
       if (marketId) {
         payload.market_id = marketId;
       }
+      if (yesTokenId) {
+        payload.yes_token_id = yesTokenId;
+      }
+      if (noTokenId) {
+        payload.no_token_id = noTokenId;
+      }
+      
+      console.log(`🔍 [BACKGROUND] Trade payload:`, payload);
 
       const response = await fetch(url, {
         method: 'POST',

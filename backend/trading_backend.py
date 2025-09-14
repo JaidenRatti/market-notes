@@ -11,19 +11,58 @@ from py_clob_client.clob_types import MarketOrderArgs, OrderType
 from py_clob_client.order_builder.constants import BUY, SELL
 
 # Add tweet-market-pipeline to path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'tweet-market-pipeline'))
-sys.path.append(os.path.join(os.path.dirname(__file__), 'tweet-market-pipeline', 'include'))
+import os
+current_dir = os.path.dirname(os.path.abspath(__file__))
+tweet_pipeline_path = os.path.join(current_dir, 'tweet-market-pipeline')
+tweet_include_path = os.path.join(current_dir, 'tweet-market-pipeline', 'include')
+
+sys.path.insert(0, tweet_pipeline_path)
+sys.path.insert(0, tweet_include_path)
 
 load_dotenv()
 
 # Import tweet analyzer (add error handling for missing dependencies)
+TWEET_ANALYSIS_AVAILABLE = False
+analyze_tweet = None
+
 try:
+    print(f"🔍 [DEBUG] Attempting to import from: {tweet_pipeline_path}")
+    print(f"🔍 [DEBUG] Include path: {tweet_include_path}")
+    print(f"🔍 [DEBUG] Current working dir: {os.getcwd()}")
+    print(f"🔍 [DEBUG] Pipeline path exists: {os.path.exists(tweet_pipeline_path)}")
+    print(f"🔍 [DEBUG] tweet_analyzer.py exists: {os.path.exists(os.path.join(tweet_pipeline_path, 'tweet_analyzer.py'))}")
+    print(f"🔍 [DEBUG] Python path: {sys.path[:3]}...")
+    
+    # Test import step by step
+    print(f"🔍 [DEBUG] Testing imports...")
+    import tweet_analyzer
+    print(f"✅ [DEBUG] tweet_analyzer module imported")
+    
     from tweet_analyzer import analyze_tweet
+    print(f"✅ [DEBUG] analyze_tweet function imported")
+    
+    # Test if it actually works
+    test_result = analyze_tweet("test", save_to_file=False, top_n=1)
+    print(f"✅ [DEBUG] Test analysis completed, keys: {list(test_result.keys()) if isinstance(test_result, dict) else type(test_result)}")
+    
     TWEET_ANALYSIS_AVAILABLE = True
-    print("✅ Tweet analysis pipeline loaded successfully")
+    print("✅ [DEBUG] Tweet analysis pipeline loaded successfully")
+    
 except ImportError as e:
-    print(f"⚠️ Tweet analysis pipeline not available: {e}")
+    print(f"❌ [DEBUG] IMPORT ERROR: {e}")
+    print(f"❌ [DEBUG] Import error type: {type(e).__name__}")
+    import traceback
+    traceback.print_exc()
     TWEET_ANALYSIS_AVAILABLE = False
+    
+except Exception as e:
+    print(f"❌ [DEBUG] OTHER ERROR: {e}")
+    print(f"❌ [DEBUG] Error type: {type(e).__name__}")
+    import traceback
+    traceback.print_exc()
+    TWEET_ANALYSIS_AVAILABLE = False
+    
+print(f"🔍 TWEET_ANALYSIS_AVAILABLE = {TWEET_ANALYSIS_AVAILABLE}")
 
 app = Flask(__name__)
 CORS(app, resources={
@@ -192,9 +231,155 @@ def convert_pipeline_to_events(pipeline_result):
     try:
         print(f"🔍 Converting pipeline result: {pipeline_result.keys() if isinstance(pipeline_result, dict) else type(pipeline_result)}")
         
-        if 'top_relevant_markets' not in pipeline_result:
-            print(f"❌ No 'top_relevant_markets' found in pipeline result")
+        # Handle new format (Option 1) with original API objects
+        if 'events' in pipeline_result and 'relevance_metadata' in pipeline_result:
+            print(f"✅ Processing NEW format with original Polymarket API objects")
+            return convert_new_format_to_events(pipeline_result)
+        
+        # Handle old format (for backward compatibility)
+        elif 'top_relevant_markets' in pipeline_result:
+            print(f"⚠️ Processing OLD format - consider updating to new format")
+            return convert_old_format_to_events(pipeline_result)
+        
+        else:
+            print(f"❌ Unknown pipeline result format")
+            print(f"🔍 Available keys: {list(pipeline_result.keys()) if isinstance(pipeline_result, dict) else 'Not a dict'}")
             return None
+            
+    except Exception as e:
+        print(f"❌ Error converting pipeline result: {e}")
+        print(f"❌ Pipeline result structure: {pipeline_result}")
+        import traceback
+        print(f"❌ Full traceback: {traceback.format_exc()}")
+        return None
+
+def convert_new_format_to_events(pipeline_result):
+    """Return PURE Polymarket events array - UNMODIFIED"""
+    try:
+        events = pipeline_result['events']  # Original Polymarket API objects
+        print(f"🎯 Returning {len(events)} PURE Polymarket events")
+        print(f"✅ NO CONVERSION - exact Polymarket API format")
+        
+        # LOG: Show what we're actually returning
+        print(f"\n🔍 [CONVERSION] EVENTS BEING RETURNED:")
+        for i, event in enumerate(events[:2]):  # Show first 2 events
+            print(f"Event {i+1} keys: {list(event.keys()) if isinstance(event, dict) else type(event)}")
+            if isinstance(event, dict):
+                # Show critical fields that frontend needs
+                critical_fields = ['id', 'title', 'question', 'description', 'markets', 'outcomePrices', 'clobTokenIds']
+                for field in critical_fields:
+                    if field in event:
+                        value = event[field]
+                        if isinstance(value, (list, dict)):
+                            print(f"  {field}: {type(value).__name__} with {len(value)} items" if hasattr(value, '__len__') else f"  {field}: {type(value).__name__}")
+                        else:
+                            print(f"  {field}: {value}"[:100] + ("..." if len(str(value)) > 100 else ""))
+            print("---")
+        
+        # Return EXACTLY what the AI pipeline found - pure Polymarket events
+        return {
+            'success': True,
+            'events': events,  # Raw Polymarket API array - ZERO changes
+            'total_count': len(events),
+            'carousel': True
+        }
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return None
+
+def convert_old_format_to_events(pipeline_result):
+    """Convert old format (transformed objects) to frontend format - DEPRECATED"""
+    try:
+        markets = pipeline_result['top_relevant_markets']
+        print(f"🎯 Processing {len(markets)} markets from OLD pipeline format")
+        
+        events = []
+        for i, market_data in enumerate(markets):
+            print(f"📊 Processing market {i+1}: {market_data.get('title', 'Unknown')}")
+            
+            # Extract market data from the old pipeline result structure
+            market_info = market_data.get('market_data', {})
+            
+            # Get volume - check various possible fields
+            volume = 0
+            if 'volume' in market_info:
+                try:
+                    volume = float(market_info['volume'].replace('$', '').replace(',', '').replace('K', '000').replace('M', '000000'))
+                except:
+                    volume = 0
+            
+            # Format volume for display
+            if volume >= 1000000:
+                volume_display = f"${volume/1000000:.1f}M"
+            elif volume >= 1000:
+                volume_display = f"${volume/1000:.0f}K"
+            else:
+                volume_display = f"${volume:,.0f}"
+            
+            # Extract prices - try different possible structures
+            yes_price = 0.5  # default
+            no_price = 0.5   # default
+            
+            # Check if outcome prices are in the market data
+            if 'outcomePrices' in market_info:
+                try:
+                    if isinstance(market_info['outcomePrices'], list):
+                        yes_price = float(market_info['outcomePrices'][0])
+                        no_price = float(market_info['outcomePrices'][1])
+                    elif isinstance(market_info['outcomePrices'], str):
+                        # Parse JSON string
+                        import json
+                        prices = json.loads(market_info['outcomePrices'])
+                        yes_price = float(prices[0])
+                        no_price = float(prices[1])
+                except Exception as parse_error:
+                    print(f"⚠️ Could not parse outcome prices: {parse_error}")
+                    # Use random but realistic prices for demo
+                    import random
+                    yes_price = random.uniform(0.3, 0.7)
+                    no_price = 1.0 - yes_price
+            
+            # Convert each market to single market event format
+            event = {
+                'title': market_data.get('title', 'Unknown Market'),
+                'question': market_data.get('title', 'Unknown Market'),
+                'description': market_data.get('relevance_explanation', market_info.get('description', 'AI-generated market prediction')),
+                'volume': volume_display,
+                'yesPrice': yes_price,  # Use camelCase to match frontend expectations
+                'noPrice': no_price,    # Use camelCase to match frontend expectations
+                'yes_price': yes_price, # Keep snake_case for backward compatibility
+                'no_price': no_price,   # Keep snake_case for backward compatibility
+                'type': 'single',
+                'relevance_score': market_data.get('relevance_score', 0),
+                'relevance_explanation': market_data.get('relevance_explanation', 'AI-ranked market relevant to your tweet'),
+                'market_id': market_data.get('ticker', f'ai_market_{i+1}'),
+                'ticker': market_data.get('ticker', f'ai_market_{i+1}'),
+                'rank': market_data.get('rank', i+1),
+                'category': market_info.get('category', 'AI Prediction'),
+                'end_date': market_info.get('end_date', '2025-12-31'),
+                'active': market_info.get('active', True)
+            }
+            events.append(event)
+            print(f"✅ Converted market {i+1}: {event['title']} (Score: {event['relevance_score']:.2f})")
+
+        print(f"🎯 Successfully converted {len(events)} events using OLD format")
+        
+        return {
+            'events': events,
+            'total_count': len(events),
+            'carousel': True,
+            'tweet_analysis': {
+                'search_query': pipeline_result.get('sentiment_analysis', {}).get('search_query', ''),
+                'sentiment_score': pipeline_result.get('sentiment_analysis', {}).get('sentiment_score', 0),
+                'key_topics': pipeline_result.get('sentiment_analysis', {}).get('key_topics', [])
+            },
+            'source': 'ai_analysis_v1'  # Mark as old format
+        }
+        
+    except Exception as e:
+        print(f"❌ Error converting old format: {e}")
+        return None
 
         events = []
         markets = pipeline_result['top_relevant_markets']
@@ -343,8 +528,12 @@ def analyze_tweet_endpoint():
         print(f"{'='*60}")
         
         # Check if tweet analysis is available
+        print(f"🔍 [DEBUG] TWEET_ANALYSIS_AVAILABLE = {TWEET_ANALYSIS_AVAILABLE}")
+        print(f"🔍 [DEBUG] analyze_tweet function = {analyze_tweet}")
+        
         if not TWEET_ANALYSIS_AVAILABLE:
-            print(f"❌ Tweet analysis pipeline not available")
+            print(f"❌ [DEBUG] Tweet analysis pipeline not available")
+            print(f"❌ [DEBUG] This is why the endpoint is returning 503")
             return jsonify({
                 'success': False,
                 'error': 'Tweet analysis pipeline not available - dependencies may be missing'
@@ -372,6 +561,21 @@ def analyze_tweet_endpoint():
         pipeline_result = analyze_tweet(tweet_text, author, top_n, save_to_file=False)
         print(f"✅ Pipeline analysis complete")
         print(f"📋 Pipeline result keys: {list(pipeline_result.keys()) if isinstance(pipeline_result, dict) else 'Not a dict'}")
+        
+        # LOG STEP 1: Raw pipeline result
+        print(f"\n🔍 [STEP 1] RAW PIPELINE RESULT:")
+        print(f"Pipeline type: {type(pipeline_result)}")
+        if isinstance(pipeline_result, dict):
+            for key in pipeline_result.keys():
+                value = pipeline_result[key]
+                if key == 'events' and isinstance(value, list):
+                    print(f"  {key}: list of {len(value)} items")
+                    for i, item in enumerate(value[:2]):  # Show first 2
+                        print(f"    Event {i+1}: {json.dumps(item, indent=6, default=str)[:800]}...")
+                else:
+                    print(f"  {key}: {json.dumps(value, indent=4, default=str)[:500]}...")
+        else:
+            print(json.dumps(pipeline_result, indent=2, default=str)[:1500] + "...")
 
         if 'error' in pipeline_result:
             print(f"❌ Pipeline returned error: {pipeline_result['error']}")
@@ -380,10 +584,25 @@ def analyze_tweet_endpoint():
                 'error': f"Pipeline error: {pipeline_result['error']}"
             }), 500
 
-        # Check if pipeline found any markets
-        if 'top_relevant_markets' in pipeline_result:
+        # Check if pipeline found any markets - handle both formats
+        if 'events' in pipeline_result:  # NEW format
+            markets_count = len(pipeline_result['events'])
+            print(f"🎯 Pipeline found {markets_count} relevant markets (NEW format)")
+            
+            if markets_count == 0:
+                tweet_analysis = pipeline_result.get('tweet_analysis', {})
+                print(f"⚠️ No markets found for this tweet")
+                return jsonify({
+                    'success': False,
+                    'error': 'No relevant markets found for this tweet content',
+                    'debug_info': {
+                        'search_query': tweet_analysis.get('search_query', 'Unknown'),
+                        'sentiment_score': tweet_analysis.get('sentiment_score', 0)
+                    }
+                }), 404
+        elif 'top_relevant_markets' in pipeline_result:  # OLD format
             markets_count = len(pipeline_result['top_relevant_markets'])
-            print(f"🎯 Pipeline found {markets_count} relevant markets")
+            print(f"🎯 Pipeline found {markets_count} relevant markets (OLD format)")
             
             if markets_count == 0:
                 print(f"⚠️ No markets found for this tweet")
@@ -396,15 +615,40 @@ def analyze_tweet_endpoint():
                     }
                 }), 404
         else:
-            print(f"❌ Pipeline result missing 'top_relevant_markets' field")
+            print(f"❌ Pipeline result missing both 'events' and 'top_relevant_markets' fields")
             return jsonify({
                 'success': False,
-                'error': 'Invalid pipeline response format'
+                'error': 'Invalid pipeline response format',
+                'debug_info': {
+                    'available_keys': list(pipeline_result.keys())
+                }
             }), 500
 
         # Convert pipeline result to our event format
         print(f"🔄 Converting pipeline result to event format...")
+        
+        # LOG STEP 2: Before conversion
+        print(f"\n🔍 [STEP 2] BEFORE CONVERSION:")
+        print(f"Input keys: {list(pipeline_result.keys()) if isinstance(pipeline_result, dict) else 'Not dict'}")
+        if 'events' in pipeline_result:
+            print(f"Events count: {len(pipeline_result['events'])}")
+            print(f"First event structure: {list(pipeline_result['events'][0].keys()) if pipeline_result['events'] else 'No events'}")
+        
         events_data = convert_pipeline_to_events(pipeline_result)
+        
+        # LOG STEP 3: After conversion
+        print(f"\n🔍 [STEP 3] AFTER CONVERSION:")
+        if events_data:
+            print(f"Converted data keys: {list(events_data.keys())}")
+            if 'events' in events_data:
+                print(f"Converted events count: {len(events_data['events'])}")
+                if events_data['events']:
+                    first_event = events_data['events'][0]
+                    print(f"First converted event keys: {list(first_event.keys()) if isinstance(first_event, dict) else type(first_event)}")
+                    print(f"First converted event sample:")
+                    print(json.dumps(first_event, indent=4, default=str)[:1000] + "...")
+        else:
+            print("Conversion returned None")
 
         if events_data and events_data.get('events'):
             events_count = len(events_data['events'])
@@ -417,6 +661,16 @@ def analyze_tweet_endpoint():
             }
             
             print(f"📤 Response keys: {list(response.keys())}")
+            
+            # LOG STEP 4: Final response to frontend
+            print(f"\n🔍 [STEP 4] FINAL RESPONSE TO FRONTEND:")
+            print(f"Response structure: success={response.get('success')}, total_count={response.get('total_count')}, carousel={response.get('carousel')}")
+            print(f"Events array length: {len(response.get('events', []))}")
+            if response.get('events'):
+                print(f"First response event sample:")
+                first_event = response['events'][0]
+                print(json.dumps(first_event, indent=4, default=str)[:1200] + "...")
+            
             print(f"{'='*60}")
             return jsonify(response)
         else:
@@ -445,59 +699,77 @@ def analyze_tweet_endpoint():
 
 @app.route('/api/trade', methods=['POST'])
 def execute_trade():
-    """Execute a trade"""
+    """Execute a REAL trade on Polymarket"""
     try:
         data = request.get_json()
+        print(f"\n💵 [TRADE] REAL TRADE REQUEST: {data}")
+        
         side = data['side']  # 'YES' or 'NO'
         amount = float(data['amount'])  # USD amount
         market_id = data.get('market_id')  # For multi-market support
-
-        market_data = load_market_data()
+        yes_token_id = data.get('yes_token_id')  # Token IDs from frontend
+        no_token_id = data.get('no_token_id')
+        
+        print(f"💵 [TRADE] EXECUTING REAL {side} TRADE for ${amount}")
+        print(f"💵 [TRADE] Market ID: {market_id}")
+        print(f"💵 [TRADE] Token IDs - YES: {yes_token_id}, NO: {no_token_id}")
+        
+        # Validate token IDs
+        if not yes_token_id or not no_token_id:
+            print(f"❌ [TRADE] ERROR: Missing token IDs")
+            return jsonify({
+                'success': False,
+                'error': f'Token IDs required for real trading. YES: {yes_token_id}, NO: {no_token_id}',
+                'side': side,
+                'amount': amount,
+                'market_id': market_id
+            }), 400
+        
+        # Get authenticated client
         client = setup_client()
-
-        # Handle different market types
-        if market_data['type'] == 'multi':
-            # Find the specific market
-            if not market_id:
-                return jsonify({'success': False, 'error': 'Market ID required for multi-market trades'}), 400
-
-            target_market = None
-            for market in market_data['markets']:
-                if market['id'] == market_id:
-                    target_market = market
-                    break
-
-            if not target_market:
-                return jsonify({'success': False, 'error': 'Market not found'}), 400
-
-            token_id = target_market['yes_token_id'] if side == 'YES' else target_market['no_token_id']
-        else:
-            # Single market
-            token_id = market_data['yes_token_id'] if side == 'YES' else market_data['no_token_id']
-
-        # Create market order
+        print(f"💵 [TRADE] Client setup complete")
+        
+        # Select the correct token ID based on side
+        token_id = yes_token_id if side == 'YES' else no_token_id
+        print(f"💵 [TRADE] Using token ID: {token_id} for {side} trade")
+        
+        # Create and execute the market order
+        from py_clob_client.order_builder.constants import BUY
+        from py_clob_client.clob_types import OrderType, MarketOrderArgs
+        
         order = MarketOrderArgs(
             token_id=token_id,
             amount=amount,
             side=BUY,
-            order_type=OrderType.FOK
+            order_type=OrderType.FOK  # Fill or Kill
         )
-
+        
+        print(f"💵 [TRADE] Created order: {order}")
+        
+        # Sign and submit the order
         signed = client.create_market_order(order)
+        print(f"💵 [TRADE] Order signed")
+        
         resp = client.post_order(signed, OrderType.FOK)
-
+        print(f"💵 [TRADE] Order posted, response: {resp}")
+        
         return jsonify({
             'success': True,
             'order_result': resp,
             'side': side,
             'amount': amount,
-            'market_id': market_id
+            'market_id': market_id,
+            'token_id': token_id,
+            'message': f'Successfully placed {side} order for ${amount}'
         })
 
     except Exception as e:
+        print(f"❌ [TRADE] Trade execution error: {e}")
+        import traceback
+        print(f"❌ [TRADE] Full traceback: {traceback.format_exc()}")
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': f'Trade failed: {str(e)}'
         }), 500
 
 @app.route('/api/positions', methods=['GET'])
@@ -550,51 +822,20 @@ def get_positions():
                 positions = json.load(f)
                 print(f"Using sample data: {len(positions)} positions")
         
-        # Transform positions data to match frontend expectations
-        formatted_positions = []
+        # LOG: Show raw API response structure
+        print(f"\n🔍 [POSITIONS] RAW API RESPONSE:")
+        print(f"Response type: {type(positions)}")
+        print(f"Positions count: {len(positions) if isinstance(positions, list) else 'Not a list'}")
+        if isinstance(positions, list) and positions:
+            print(f"First position keys: {list(positions[0].keys()) if isinstance(positions[0], dict) else type(positions[0])}")
+            print(f"First position sample:")
+            print(json.dumps(positions[0], indent=4, default=str)[:1000] + "...")
         
-        for pos in positions:
-            # Calculate P&L values
-            pnl_dollar = pos.get('cashPnl', 0)
-            pnl_percent = pos.get('percentPnl', 0) * 100 if pos.get('percentPnl') else 0
-            
-            # Determine position status (open/closed based on size)
-            position_size = pos.get('size', 0)
-            status = 'open' if position_size > 0 else 'closed'
-            
-            # Format volume
-            current_value = pos.get('currentValue', 0)
-            if current_value >= 1000000:
-                volume_display = f"${current_value/1000000:.1f}M"
-            elif current_value >= 1000:
-                volume_display = f"${current_value/1000:.0f}K"
-            else:
-                volume_display = f"${current_value:,.2f}"
-            
-            formatted_position = {
-                'id': hash(pos.get('asset', '')) % 10000,  # Generate a simple ID
-                'title': pos.get('title', 'Unknown Market'),
-                'position': pos.get('outcome', 'Unknown'),  # YES or NO
-                'shares': pos.get('totalBought', 0),
-                'avgPrice': pos.get('avgPrice', 0),
-                'currentPrice': pos.get('curPrice', 0),
-                'pnl': pnl_dollar,
-                'pnl_percent': pnl_percent,
-                'status': status,
-                'volume': volume_display,
-                'initialValue': pos.get('initialValue', 0),
-                'currentValue': pos.get('currentValue', 0),
-                'redeemable': pos.get('redeemable', False),
-                'endDate': pos.get('endDate', ''),
-                'icon': pos.get('icon', ''),
-                'slug': pos.get('slug', '')
-            }
-            
-            formatted_positions.append(formatted_position)
-        
+        # RETURN RAW API DATA - NO TRANSFORMATION
+        print(f"✅ Returning PURE Polymarket positions API data - NO CONVERSION")
         return jsonify({
             'success': True,
-            'positions': formatted_positions
+            'positions': positions  # EXACT API response
         })
         
     except Exception as e:
@@ -605,48 +846,28 @@ def get_positions():
                 sample_positions = json.load(f)
                 print("Using sample position data as fallback")
                 
-                formatted_positions = []
-                for pos in sample_positions:
-                    pnl_dollar = pos.get('cashPnl', 0)
-                    position_size = pos.get('size', 0)
-                    status = 'open' if position_size > 0 else 'closed'
-                    current_value = pos.get('currentValue', 0)
-                    
-                    if current_value >= 1000000:
-                        volume_display = f"${current_value/1000000:.1f}M"
-                    elif current_value >= 1000:
-                        volume_display = f"${current_value/1000:.0f}K"
-                    else:
-                        volume_display = f"${current_value:,.2f}"
-                    
-                    formatted_position = {
-                        'id': hash(pos.get('asset', '')) % 10000,
-                        'title': pos.get('title', 'Unknown Market'),
-                        'position': pos.get('outcome', 'Unknown'),
-                        'shares': pos.get('totalBought', 0),
-                        'avgPrice': pos.get('avgPrice', 0),
-                        'currentPrice': pos.get('curPrice', 0),
-                        'pnl': pnl_dollar,
-                        'pnl_percent': pos.get('percentPnl', 0) * 100,
-                        'status': status,
-                        'volume': volume_display,
-                        'initialValue': pos.get('initialValue', 0),
-                        'currentValue': pos.get('currentValue', 0),
-                        'redeemable': pos.get('redeemable', False),
-                        'endDate': pos.get('endDate', ''),
-                        'icon': pos.get('icon', ''),
-                        'slug': pos.get('slug', '')
-                    }
-                    formatted_positions.append(formatted_position)
+                # LOG: Show sample data structure
+                print(f"\n🔍 [FALLBACK POSITIONS] SAMPLE DATA:")
+                print(f"Sample type: {type(sample_positions)}")
+                print(f"Sample count: {len(sample_positions) if isinstance(sample_positions, list) else 'Not a list'}")
+                if isinstance(sample_positions, list) and sample_positions:
+                    print(f"First sample keys: {list(sample_positions[0].keys()) if isinstance(sample_positions[0], dict) else type(sample_positions[0])}")
                 
+                # RETURN RAW SAMPLE DATA - NO TRANSFORMATION
+                print(f"✅ Returning PURE sample positions data - NO CONVERSION")
                 return jsonify({
                     'success': True,
-                    'positions': formatted_positions
+                    'positions': sample_positions  # EXACT sample data
                 })
-        except:
+        except FileNotFoundError:
             return jsonify({
                 'success': False,
-                'error': str(e)
+                'error': 'Sample position file not found and API failed'
+            }), 500
+        except Exception as fallback_error:
+            return jsonify({
+                'success': False,
+                'error': f'API failed and sample data error: {str(fallback_error)}'
             }), 500
 
 @app.route('/api/closed-positions', methods=['GET'])
@@ -700,53 +921,20 @@ def get_closed_positions():
                 closed_positions = [sample_position]
                 print(f"Using sample data: {len(closed_positions)} closed positions")
         
-        # Transform closed positions data to match frontend expectations
-        formatted_positions = []
+        # LOG: Show raw closed positions API response
+        print(f"\n🔍 [CLOSED POSITIONS] RAW API RESPONSE:")
+        print(f"Response type: {type(closed_positions)}")
+        print(f"Closed positions count: {len(closed_positions) if isinstance(closed_positions, list) else 'Not a list'}")
+        if isinstance(closed_positions, list) and closed_positions:
+            print(f"First closed position keys: {list(closed_positions[0].keys()) if isinstance(closed_positions[0], dict) else type(closed_positions[0])}")
+            print(f"First closed position sample:")
+            print(json.dumps(closed_positions[0], indent=4, default=str)[:1000] + "...")
         
-        for pos in closed_positions:
-            # For closed positions, use realizedPnl instead of cashPnl
-            pnl_dollar = pos.get('realizedPnl', 0)
-            pnl_percent = (pnl_dollar / pos.get('totalBought', 1)) * 100 if pos.get('totalBought', 0) > 0 else 0
-            
-            # Closed positions always have status 'closed'
-            status = 'closed'
-            
-            # Calculate final value for closed positions
-            total_bought = pos.get('totalBought', 0)
-            final_value = total_bought + pnl_dollar  # totalBought + realized P&L
-            
-            if final_value >= 1000000:
-                volume_display = f"${final_value/1000000:.1f}M"
-            elif final_value >= 1000:
-                volume_display = f"${final_value/1000:.0f}K"
-            else:
-                volume_display = f"${final_value:,.2f}"
-            
-            formatted_position = {
-                'id': hash(pos.get('asset', '')) % 10000,  # Generate a simple ID
-                'title': pos.get('title', 'Unknown Market'),
-                'position': pos.get('outcome', 'Unknown'),  # YES or NO
-                'shares': pos.get('totalBought', 0),
-                'avgPrice': pos.get('avgPrice', 0),
-                'currentPrice': pos.get('curPrice', 0),
-                'pnl': pnl_dollar,
-                'pnl_percent': pnl_percent,
-                'status': status,
-                'volume': volume_display,
-                'initialValue': pos.get('totalBought', 0),  # For closed positions
-                'currentValue': final_value,
-                'redeemable': False,  # Closed positions are not redeemable
-                'endDate': pos.get('endDate', ''),
-                'icon': pos.get('icon', ''),
-                'slug': pos.get('slug', ''),
-                'realizedPnl': pnl_dollar  # Keep the original realized P&L
-            }
-            
-            formatted_positions.append(formatted_position)
-        
+        # RETURN RAW API DATA - NO TRANSFORMATION
+        print(f"✅ Returning PURE Polymarket closed positions API data - NO CONVERSION")
         return jsonify({
             'success': True,
-            'positions': formatted_positions
+            'positions': closed_positions  # EXACT API response
         })
         
     except Exception as e:
@@ -757,47 +945,31 @@ def get_closed_positions():
                 sample_position = json.load(f)
                 print("Using sample closed position data as fallback")
                 
-                # Format the sample position
-                pnl_dollar = sample_position.get('realizedPnl', 0)
-                total_bought = sample_position.get('totalBought', 0)
-                pnl_percent = (pnl_dollar / total_bought * 100) if total_bought > 0 else 0
-                final_value = total_bought + pnl_dollar
+                # Wrap single position in array to match API format
+                sample_positions = [sample_position] if not isinstance(sample_position, list) else sample_position
                 
-                if final_value >= 1000000:
-                    volume_display = f"${final_value/1000000:.1f}M"
-                elif final_value >= 1000:
-                    volume_display = f"${final_value/1000:.0f}K"
-                else:
-                    volume_display = f"${final_value:,.2f}"
+                # LOG: Show sample closed position data
+                print(f"\n🔍 [FALLBACK CLOSED POSITIONS] SAMPLE DATA:")
+                print(f"Sample type: {type(sample_positions)}")
+                print(f"Sample count: {len(sample_positions)}")
+                if sample_positions:
+                    print(f"First sample keys: {list(sample_positions[0].keys()) if isinstance(sample_positions[0], dict) else type(sample_positions[0])}")
                 
-                formatted_position = {
-                    'id': hash(sample_position.get('asset', '')) % 10000,
-                    'title': sample_position.get('title', 'Unknown Market'),
-                    'position': sample_position.get('outcome', 'Unknown'),
-                    'shares': sample_position.get('totalBought', 0),
-                    'avgPrice': sample_position.get('avgPrice', 0),
-                    'currentPrice': sample_position.get('curPrice', 0),
-                    'pnl': pnl_dollar,
-                    'pnl_percent': pnl_percent,
-                    'status': 'closed',
-                    'volume': volume_display,
-                    'initialValue': sample_position.get('totalBought', 0),
-                    'currentValue': final_value,
-                    'redeemable': False,
-                    'endDate': sample_position.get('endDate', ''),
-                    'icon': sample_position.get('icon', ''),
-                    'slug': sample_position.get('slug', ''),
-                    'realizedPnl': pnl_dollar
-                }
-                
+                # RETURN RAW SAMPLE DATA - NO TRANSFORMATION
+                print(f"✅ Returning PURE sample closed positions data - NO CONVERSION")
                 return jsonify({
                     'success': True,
-                    'positions': [formatted_position]
+                    'positions': sample_positions  # EXACT sample data
                 })
-        except:
+        except FileNotFoundError:
             return jsonify({
                 'success': False,
-                'error': str(e)
+                'error': 'Sample closed position file not found and API failed'
+            }), 500
+        except Exception as fallback_error:
+            return jsonify({
+                'success': False,
+                'error': f'Closed positions API failed and sample data error: {str(fallback_error)}'
             }), 500
 
 @app.route('/api/prices', methods=['GET'])

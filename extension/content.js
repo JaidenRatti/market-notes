@@ -28,6 +28,21 @@ function validatePayout(payout) {
   return payout;
 }
 
+// Function to format volume numbers properly
+function formatVolumeNumber(volume) {
+  if (!volume || isNaN(volume)) return 'N/A';
+  
+  const num = parseFloat(volume);
+  
+  if (num >= 1000000) {
+    return `$${(num / 1000000).toFixed(1)}M`;
+  } else if (num >= 1000) {
+    return `$${(num / 1000).toFixed(0)}K`;
+  } else {
+    return `$${num.toLocaleString('en-US', {maximumFractionDigits: 0})}`;
+  }
+}
+
 // Function to create position card
 function createPositionCard(position) {
   const pnlClass = position.pnl >= 0 ? 'positive' : 'negative';
@@ -330,14 +345,140 @@ function createPolymarketButtonForHeader() {
   return buttonContainer;
 }
 
+// Function to convert raw Polymarket API event to popup format
+function convertPolymarketEventToPopupFormat(polymarketEvent) {
+  console.log('🔄 [DEBUG] Converting raw Polymarket event:', polymarketEvent?.title, 'Markets:', polymarketEvent?.markets?.length);
+  
+  if (!polymarketEvent || !polymarketEvent.markets || polymarketEvent.markets.length === 0) {
+    console.error('❌ [DEBUG] Invalid Polymarket event structure:', polymarketEvent);
+    return null;
+  }
+  
+  // Check if this is a multi-market event (more than 1 market)
+  if (polymarketEvent.markets.length > 1) {
+    console.log('🎯 [DEBUG] Processing multi-market event with', polymarketEvent.markets.length, 'markets');
+    
+    // Multi-market event - convert each market
+    const allMarkets = polymarketEvent.markets.map((market, index) => {
+      // Parse outcomePrices (can be string or array)
+      let outcomePrices = market.outcomePrices || ['0.5', '0.5'];
+      if (typeof outcomePrices === 'string') {
+        try {
+          outcomePrices = JSON.parse(outcomePrices);
+        } catch (e) {
+          console.warn('Failed to parse outcomePrices:', outcomePrices);
+          outcomePrices = ['0.5', '0.5'];
+        }
+      }
+      
+      const yesPrice = parseFloat(outcomePrices[0]) || 0.5;
+      const candidateName = market.groupItemTitle || market.question || `Option ${index + 1}`;
+      
+      return {
+        id: market.id || `${polymarketEvent.id}_${index}`,
+        question: market.question || `Market ${index + 1}`,
+        candidate: candidateName,
+        yes_price: yesPrice,
+        no_price: parseFloat(outcomePrices[1]) || 0.5,
+        volume: formatVolumeNumber(market.volume || polymarketEvent.volume || 0),
+        image: market.image || polymarketEvent.image || '',
+        icon: market.icon || polymarketEvent.icon || '',
+        description: market.description || 'Market option',
+        // Add fields to help with filtering
+        isActive: market.active !== false, // Default to true if not specified
+        hasRealData: market.groupItemTitle && market.groupItemTitle.trim() !== '',
+        originalIndex: index
+      };
+    });
+    
+    // Filter out placeholder/inactive markets
+    const markets = allMarkets.filter(market => {
+      // Keep markets that are:
+      // 1. Active (not explicitly set to false)
+      // 2. Have real candidate names (not just generic titles)
+      // 3. Don't have exactly 50% probability (unless it's the only real option)
+      const hasValidName = market.hasRealData && 
+                          !market.candidate.startsWith('Market ') && 
+                          !market.candidate.startsWith('Option ');
+      
+      const hasRealPrice = market.yes_price !== 0.5 || hasValidName;
+      
+      return market.isActive && (hasValidName || hasRealPrice);
+    });
+    
+    console.log(`🔄 [DEBUG] Filtered markets: ${allMarkets.length} total → ${markets.length} active`, 
+               `(removed ${allMarkets.length - markets.length} placeholders)`);
+    
+    // Sort markets by YES price (probability) in descending order - highest probability first
+    markets.sort((a, b) => b.yes_price - a.yes_price);
+    console.log('🎯 [DEBUG] Sorted markets by probability (highest first):', markets.map(m => `${m.candidate}: ${(m.yes_price * 100).toFixed(1)}%`));
+    
+    return {
+      title: polymarketEvent.title,
+      question: polymarketEvent.title,
+      description: polymarketEvent.description || 'Multi-market event',
+      volume: formatVolumeNumber(polymarketEvent.volume || 0),
+      type: 'multi',
+      markets: markets,
+      polymarket_id: polymarketEvent.id,
+      original_event: polymarketEvent
+    };
+  } else {
+    console.log('🎯 [DEBUG] Processing single-market event');
+    
+    // Single market event
+    const firstMarket = polymarketEvent.markets[0];
+    let outcomePrices = firstMarket.outcomePrices || ['0.5', '0.5'];
+    
+    // Parse outcomePrices if it's a string
+    if (typeof outcomePrices === 'string') {
+      try {
+        outcomePrices = JSON.parse(outcomePrices);
+      } catch (e) {
+        console.warn('Failed to parse outcomePrices:', outcomePrices);
+        outcomePrices = ['0.5', '0.5'];
+      }
+    }
+    
+    const yesPrice = parseFloat(outcomePrices[0]) || 0.5;
+    const noPrice = parseFloat(outcomePrices[1]) || 0.5;
+    
+    return {
+      title: polymarketEvent.title || firstMarket.question,
+      question: firstMarket.question,
+      description: polymarketEvent.description || firstMarket.description || 'Market details',
+      volume: formatVolumeNumber(polymarketEvent.volume || firstMarket.volume || 0),
+      yesPrice: yesPrice,
+      noPrice: noPrice,
+      yes_price: yesPrice,  // Backward compatibility
+      no_price: noPrice,    // Backward compatibility
+      type: 'single',
+      polymarket_id: polymarketEvent.id,
+      original_event: polymarketEvent
+    };
+  }
+}
+
 // Function to create market notes popup with trading
 function createMarketNotesPopup(marketData, context = 'tweet') {
   const popup = document.createElement('div');
   popup.className = 'market-notes-popup';
 
-  // Check if this is carousel data
+  // Check if this is carousel data with original Polymarket events
   const isCarousel = marketData.carousel && marketData.events && allEvents.length > 0;
-  const eventToDisplay = isCarousel ? currentEventData : marketData;
+  let eventToDisplay;
+  
+  if (isCarousel) {
+    // Convert current Polymarket event to popup format
+    eventToDisplay = convertPolymarketEventToPopupFormat(currentEventData);
+    if (!eventToDisplay) {
+      console.error('❌ [DEBUG] Failed to convert Polymarket event to popup format');
+      return null;
+    }
+    console.log('🔄 [DEBUG] Converted Polymarket event:', eventToDisplay.title);
+  } else {
+    eventToDisplay = marketData;
+  }
 
   // Show carousel controls if we have multiple events or if we're in carousel mode
   const carouselControls = (isCarousel || (allEvents && allEvents.length > 1)) ? `
@@ -527,6 +668,13 @@ function navigateToEvent(direction) {
 function updatePopupContent() {
   if (!marketNotesPopup || !currentEventData) return;
 
+  // Convert current Polymarket event to popup format
+  const convertedEventData = convertPolymarketEventToPopupFormat(currentEventData);
+  if (!convertedEventData) {
+    console.error('❌ [DEBUG] Failed to convert event in updatePopupContent');
+    return;
+  }
+
   const carouselControls = `
     <div class="event-carousel-controls">
       <button class="event-nav-btn prev-event-btn" title="Previous Event">‹</button>
@@ -539,10 +687,12 @@ function updatePopupContent() {
 
   // Generate new content based on event type
   let newContent;
-  if (currentEventData.type === 'multi') {
-    newContent = createMultiMarketPopupHTML(currentEventData, headerControls, carouselControls);
+  if (convertedEventData.type === 'multi') {
+    console.log('🎯 [DEBUG] Carousel navigation: Creating multi-market popup');
+    newContent = createMultiMarketPopupHTML(convertedEventData, headerControls, carouselControls);
   } else {
-    newContent = createSingleMarketPopupHTML(currentEventData, headerControls, carouselControls);
+    console.log('🎯 [DEBUG] Carousel navigation: Creating single-market popup');
+    newContent = createSingleMarketPopupHTML(convertedEventData, headerControls, carouselControls);
   }
 
   // Update popup content
@@ -737,6 +887,24 @@ async function executeTrade(side, amount, marketId = null) {
 
     if (marketId) {
       message.market_id = marketId;
+      
+      // Try to extract token IDs from current event data
+      if (currentEventData && currentEventData.markets) {
+        const targetMarket = currentEventData.markets.find(m => m.id === marketId);
+        if (targetMarket && targetMarket.clobTokenIds) {
+          try {
+            const tokenIds = typeof targetMarket.clobTokenIds === 'string' 
+              ? JSON.parse(targetMarket.clobTokenIds) 
+              : targetMarket.clobTokenIds;
+            
+            message.yes_token_id = tokenIds[0];
+            message.no_token_id = tokenIds[1];
+            console.log(`🔍 [DEBUG] Added token IDs: YES=${tokenIds[0]}, NO=${tokenIds[1]}`);
+          } catch (e) {
+            console.warn('⚠️ [DEBUG] Could not parse clobTokenIds:', e);
+          }
+        }
+      }
     }
 
     chrome.runtime.sendMessage(message, (response) => {
@@ -1367,7 +1535,17 @@ function setupTradingHandlers() {
 
       if (result.success) {
         const profitAmount = profitAmountEl ? profitAmountEl.textContent : '$0.00';
-        const candidate = marketId ? ` for ${activeSideBtn.closest('[data-market-id]').querySelector('h5').textContent}` : '';
+        
+        // Safely get candidate name for multi-market trades
+        let candidate = '';
+        if (marketId) {
+          const marketElement = activeSideBtn.closest('[data-market-id]');
+          const candidateElement = marketElement ? marketElement.querySelector('h5') : null;
+          if (candidateElement && candidateElement.textContent) {
+            candidate = ` for ${candidateElement.textContent}`;
+          }
+        }
+        
         statusEl.innerHTML = `<div class="success">✅ Trade executed! Bought ${side}${candidate} for $${amount}<br/>Potential profit: ${profitAmount}</div>`;
 
         // Clear the form after successful trade
@@ -1483,8 +1661,18 @@ function injectPolymarketButtons() {
 
         if (analysisResult && analysisResult.events && analysisResult.events.length > 0) {
           console.log('🎯 [DEBUG] AI found relevant markets!', analysisResult.events.length, 'markets');
-          marketData = analysisResult;
-          currentMarketType = 'carousel'; // Use carousel mode for AI results
+          console.log('🔍 [DEBUG] Raw Polymarket event:', analysisResult.events[0]);
+          
+          // Use RAW Polymarket events directly
+          allEvents = analysisResult.events;  // Raw Polymarket API events
+          currentEventIndex = 0;
+          currentEventData = allEvents[0];     // First raw Polymarket event
+          
+          marketData = {
+            carousel: true,
+            events: analysisResult.events     // Raw events array
+          };
+          currentMarketType = 'carousel';
         } else {
           console.log('⚠️ [DEBUG] No relevant markets found, falling back to sample data');
           marketData = await fetchMarketData();

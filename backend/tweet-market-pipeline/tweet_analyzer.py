@@ -11,7 +11,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'includ
 
 from include.enhanced_pipeline import process_tweet_with_ranking_sync
 
-def analyze_tweet(tweet_text: str, author: str = None, top_n: int = 5, save_to_file: bool = True) -> dict:
+def analyze_tweet(tweet_text: str, author: str = None, top_n: int = 5, save_to_file: bool = True, preserve_api_format: bool = True) -> dict:
     """
     Analyze any tweet and get top relevant markets
     
@@ -20,6 +20,7 @@ def analyze_tweet(tweet_text: str, author: str = None, top_n: int = 5, save_to_f
         author: Optional tweet author (default: "Unknown")
         top_n: Number of top markets to return (default: 5)
         save_to_file: Whether to save results to a JSON file (default: True)
+        preserve_api_format: If True, returns original Polymarket API format (default: True)
     
     Returns:
         Dict containing complete analysis results
@@ -34,8 +35,8 @@ def analyze_tweet(tweet_text: str, author: str = None, top_n: int = 5, save_to_f
         # Process the tweet through the complete pipeline
         result = process_tweet_with_ranking_sync(tweet_text, author, top_n)
         
-        # Display summary
-        if "top_relevant_markets" in result:
+        # Display summary - handle both old and new formats
+        if "top_relevant_markets" in result:  # Old format
             markets = result["top_relevant_markets"]
             search_query = result["sentiment_analysis"]["search_query"]
             sentiment_score = result["sentiment_analysis"]["sentiment_score"]
@@ -50,6 +51,29 @@ def analyze_tweet(tweet_text: str, author: str = None, top_n: int = 5, save_to_f
                 title = market["title"]
                 score = market["relevance_score"]
                 explanation = market["relevance_explanation"]
+                
+                print(f"#{rank}. {title}")
+                print(f"    Score: {score:.2f}/1.0")
+                print(f"    Why: {explanation}")
+                print()
+        elif "events" in result and "relevance_metadata" in result:  # New format
+            events = result["events"]
+            metadata = result["relevance_metadata"]
+            tweet_analysis = result["tweet_analysis"]
+            search_query = tweet_analysis["search_query"]
+            sentiment_score = tweet_analysis["sentiment_score"]
+            
+            print(f"✅ Generated search query: '{search_query}'")
+            print(f"📊 Sentiment score: {sentiment_score}")
+            print(f"🎯 Top {len(events)} most relevant markets (after AI ranking):")
+            print()
+            
+            for i, event in enumerate(events):
+                meta = metadata[i]
+                rank = meta["rank"]
+                title = event["title"]
+                score = meta["relevance_score"]
+                explanation = meta["relevance_explanation"]
                 
                 print(f"#{rank}. {title}")
                 print(f"    Score: {score:.2f}/1.0")

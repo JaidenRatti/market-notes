@@ -1,0 +1,445 @@
+{
+  "original_tweet": {
+    "text": "CZ pardon odds keep rising on Polymarket with zero news. Are these Binance insiders buying or just degens doing degen stuff? Guess we will find out very soon",
+    "timestamp": "2025-09-14T05:58:02Z"
+  },
+  "sentiment_analysis": {
+    "search_query": "CZ pardon",
+    "key_topics": [
+      "Binance",
+      "Polymarket",
+      "CZ pardon",
+      "cryptocurrency",
+      "stock market"
+    ],
+    "sentiment_score": 0.3,
+    "confidence": 0.8
+  },
+  "ranking_summary": {
+    "total_markets_analyzed": 5,
+    "top_markets_returned": 5,
+    "ranking_method": "AI-powered relevance scoring using Cohere"
+  },
+  "top_relevant_markets": [
+    {
+      "rank": 1,
+      "relevance_score": 0.3,
+      "relevance_explanation": "The prediction market has low relevance to the original tweet. While both the tweet and the market discuss CEOs, the specific topic of the tweet is about \"CZ pardon odds\" and Polymarket, which does not align directly with the market's focus on Tim Cook and Apple.",
+      "key_matches": [
+        "CEOs",
+        "2025"
+      ],
+      "market_id": "16086",
+      "title": "Which CEOs will be gone in 2025?",
+      "description": "This is a market group over which CEOs will be out of their position by December 31, 2025.",
+      "slug": "which-ceos-will-be-out-in-2025",
+      "active": true,
+      "closed": false,
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24hr": 2.628175,
+      "liquidity": 23893.8113,
+      "comment_count": 9,
+      "tags": [
+        "Business",
+        "Economy",
+        "2025 Predictions",
+        "AI",
+        "Big Tech"
+      ],
+      "prediction_markets": [
+        {
+          "question": "Tim Cook out as Apple CEO in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.05\", \"0.95\"]",
+          "volume": "8806.585599",
+          "liquidity": "5995.5021",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Dan Clancy out as Twitch CEO in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.145\", \"0.855\"]",
+          "volume": "173364.428731",
+          "liquidity": "881.0768",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Sundar Pichai out as Google CEO in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.06\", \"0.94\"]",
+          "volume": "32017.288258",
+          "liquidity": "5049.4843",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Andy Jassy out as Amazon CEO in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.045\", \"0.955\"]",
+          "volume": "7069.534869",
+          "liquidity": "5057.2456",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Brian Armstrong out as Coinbase CEO in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.075\", \"0.925\"]",
+          "volume": "170464.434842",
+          "liquidity": "982.7184",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Sam Altman out as OpenAI CEO in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.045\", \"0.955\"]",
+          "volume": "66899.49944",
+          "liquidity": "5681.9041",
+          "end_date": "2025-12-31T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about a Fed rate hike in 2025 has no relevance to the original tweet discussing the odds of a \"CZ pardon\" on Polymarket and the potential involvement of Binance insiders or \"degens\".",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "16084",
+      "title": "Fed rate hike in 2025?",
+      "description": "This market will resolve to “Yes” if the upper bound of the target federal funds rate is increased at any point between January 1, 2025 and the Fed's December 2025 meeting, currently scheduled for December 9-10. Otherwise, this market will resolve to “No”.\n\nThis market may not resolve to \"No\" until ",
+      "slug": "fed-rate-hike-in-2025",
+      "active": true,
+      "closed": false,
+      "end_date": "2025-12-10T12:00:00Z",
+      "volume_24hr": 5117.485153,
+      "liquidity": 70056.83297,
+      "comment_count": 17,
+      "tags": [
+        "Fed Rates",
+        "Business",
+        "2025 Predictions",
+        "Economic Policy",
+        "Jerome Powell",
+        "Fed"
+      ],
+      "prediction_markets": [
+        {
+          "question": "Fed rate hike in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.027\", \"0.973\"]",
+          "volume": "540980.201023",
+          "liquidity": "70056.83297",
+          "end_date": "2025-12-10T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about Federal Reserve rate cuts in 2025 has no relevance to the original tweet discussing the \"CZ pardon\" odds on Polymarket and the potential involvement of Binance insiders or cryptocurrency enthusiasts.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "16085",
+      "title": "How many Fed rate cuts in 2025?",
+      "description": "This is a market group over how many Fed rate cuts will happen in 2025.",
+      "slug": "how-many-fed-rate-cuts-in-2025",
+      "active": true,
+      "closed": false,
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24hr": 49156.645352,
+      "liquidity": 1220886.62808,
+      "comment_count": 78,
+      "tags": [
+        "Fed Rates",
+        "Business",
+        "2025 Predictions",
+        "Economic Policy",
+        "Jerome Powell",
+        "Fed"
+      ],
+      "prediction_markets": [
+        {
+          "question": "Will no Fed rate cuts happen in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.01\", \"0.99\"]",
+          "volume": "3088435.717585",
+          "liquidity": "144952.20969",
+          "end_date": "2025-12-10T12:00:00Z"
+        },
+        {
+          "question": "Will 7 Fed rate cuts happen in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0035\", \"0.9965\"]",
+          "volume": "1396159.685483",
+          "liquidity": "152091.74723",
+          "end_date": "2025-12-10T12:00:00Z"
+        },
+        {
+          "question": "Will 1 Fed rate cut happen in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.038\", \"0.962\"]",
+          "volume": "1863202.832316",
+          "liquidity": "234613.49764",
+          "end_date": "2025-12-10T12:00:00Z"
+        },
+        {
+          "question": "Will 2 Fed rate cuts happen in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.335\", \"0.665\"]",
+          "volume": "1574747.966811",
+          "liquidity": "58375.6084",
+          "end_date": "2025-12-10T12:00:00Z"
+        },
+        {
+          "question": "Will 6 Fed rate cuts happen in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0125\", \"0.9875\"]",
+          "volume": "1482193.445084",
+          "liquidity": "173503.17995",
+          "end_date": "2025-12-10T12:00:00Z"
+        },
+        {
+          "question": "Will 3 Fed rate cuts happen in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.48\", \"0.52\"]",
+          "volume": "1693244.162635",
+          "liquidity": "55087.0169",
+          "end_date": "2025-12-10T12:00:00Z"
+        },
+        {
+          "question": "Will 4 Fed rate cuts happen in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.1055\", \"0.8945\"]",
+          "volume": "1977236.5193",
+          "liquidity": "69383.23691",
+          "end_date": "2025-12-10T12:00:00Z"
+        },
+        {
+          "question": "Will 5 Fed rate cuts happen in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.026\", \"0.974\"]",
+          "volume": "1461286.009208",
+          "liquidity": "165104.19495",
+          "end_date": "2025-12-10T12:00:00Z"
+        },
+        {
+          "question": "Will 8+ Fed rate cuts happen in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0085\", \"0.9915\"]",
+          "volume": "1498344.285928",
+          "liquidity": "170658.88151",
+          "end_date": "2025-12-10T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about NVIDIA's market cap has no relevance to the original tweet, which discusses the possibility of a pardon for CZ, likely the founder of Binance, and the related sentiment analysis.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "16087",
+      "title": "Largest Company end of 2025?",
+      "description": "This is a market on predicting which company will be the largest by market capitalization on December 31, 2025.",
+      "slug": "largest-company-end-of-2025",
+      "active": true,
+      "closed": false,
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24hr": 21275.632398,
+      "liquidity": 482969.243,
+      "comment_count": 721,
+      "tags": [
+        "2025 Predictions",
+        "AI",
+        "Business",
+        "Economy",
+        "DeepSeek",
+        "Big Tech"
+      ],
+      "prediction_markets": [
+        {
+          "question": "Will NVIDIA be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.77\", \"0.23\"]",
+          "volume": "797696.911585",
+          "liquidity": "67153.3586",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Company D be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Company E be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Microsoft be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.13\", \"0.87\"]",
+          "volume": "428042.042183",
+          "liquidity": "32025.3745",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Company J be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Apple be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0475\", \"0.9525\"]",
+          "volume": "425319.182179",
+          "liquidity": "52522.69523",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Alphabet be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.032\", \"0.968\"]",
+          "volume": "644222.529509",
+          "liquidity": "84501.63787",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will another company be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Tesla be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0285\", \"0.9715\"]",
+          "volume": "719428.435495",
+          "liquidity": "72609.93231",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Company A be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Company B be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Company C be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Company F be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Company G be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.495\", \"0.505\"]",
+          "volume": "",
+          "liquidity": "11.11",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Company H be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Company I be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Amazon be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0025\", \"0.9975\"]",
+          "volume": "596192.238032",
+          "liquidity": "97852.92849",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Saudi Aramco be the largest company in the world by market cap on December 31?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0025\", \"0.9975\"]",
+          "volume": "483380.983618",
+          "liquidity": "76292.206",
+          "end_date": "2025-12-31T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about a potential US recession in 2025 has no relevance to the original tweet, which discusses the odds of a \"CZ pardon\" on Polymarket and speculates about the involvement of Binance insiders or degen activities.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "16092",
+      "title": "US recession in 2025?",
+      "description": "This market will resolve to “Yes”, if either of the following conditions are met:\n\n1.  The National Bureau of Economic Research (NBER) publicly announces that a recession has occurred in the United States, at any point in 2025, with the announcement made by December 31, 2025, 11:59 PM ET.\n\n2.  The s",
+      "slug": "us-recession-in-2025",
+      "active": true,
+      "closed": false,
+      "end_date": "2026-02-28T12:00:00Z",
+      "volume_24hr": 11995.162768,
+      "liquidity": 91123.9122,
+      "comment_count": 798,
+      "tags": [
+        "Business",
+        "Economy",
+        "2025 Predictions",
+        "xtrd-1",
+        "Macro Graph",
+        "Economic Policy"
+      ],
+      "prediction_markets": [
+        {
+          "question": "US recession in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.095\", \"0.905\"]",
+          "volume": "9433714.393787",
+          "liquidity": "91123.9122",
+          "end_date": "2026-02-28T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

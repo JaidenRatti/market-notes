@@ -1,0 +1,239 @@
+{
+  "original_tweet": {
+    "text": "CZ pardon odds keep rising on Polymarket with zero news. Are these Binance insiders buying or just degens doing degen stuff? Guess we will find out very soon",
+    "timestamp": "2025-09-14T05:58:02Z"
+  },
+  "sentiment_analysis": {
+    "search_query": "CZ pardon",
+    "key_topics": [
+      "Binance",
+      "Polymarket",
+      "CZ pardon",
+      "cryptocurrency",
+      "stock market"
+    ],
+    "sentiment_score": 0.1,
+    "confidence": 0.8
+  },
+  "ranking_summary": {
+    "total_markets_analyzed": 1,
+    "top_markets_returned": 1,
+    "ranking_method": "AI-powered relevance scoring using Cohere"
+  },
+  "top_relevant_markets": [
+    {
+      "rank": 1,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about Trump pardoning Ross Ulbricht is completely unrelated to the original tweet, which discusses the possibility of CZ, the founder of Binance, being pardoned and the speculation around Polymarket odds.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "14178",
+      "title": "Who will Trump pardon in first 100 days?",
+      "description": "This is a market on whether Donald Trump will issue pardons.",
+      "slug": "trump-pardons",
+      "active": true,
+      "closed": true,
+      "end_date": "2025-04-29T12:00:00Z",
+      "volume_24hr": 0,
+      "liquidity": 0,
+      "comment_count": 1146,
+      "tags": [
+        "U.S. Politics",
+        "First 100 days",
+        "Trump 100 Days",
+        "Sam Bankman",
+        "Trump",
+        "Politics",
+        "Trump Presidency",
+        "Campaign Promises"
+      ],
+      "prediction_markets": [
+        {
+          "question": "Will Trump pardon Ross Ulbricht in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"1\", \"0\"]",
+          "volume": "6087387.385208",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Diddy in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "1401581.2839",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon SBF in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "2009458.079033",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Hunter Biden in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "1312596.358724",
+          "liquidity": "0",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Young Thug in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "115126.893161",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon himself in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "1087166.820878",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Steve Bannon in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "805283.89568",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Edward Snowden in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "1889163.955423",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Julian Assange in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "564823.137986",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon a January 6 protestor in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"1\", \"0\"]",
+          "volume": "756779.181413",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Daniel Penny in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "67404.422423",
+          "liquidity": "0",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Roger Ver in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "1466254.082299",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Elon Musk in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "568855.276669",
+          "liquidity": "0",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Rudy Giuliani in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "199944.984963",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Roger Stone in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "32880.040404",
+          "liquidity": "0",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "ARCH Will Trump pardon Enrique Tarrio in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "",
+          "volume": "0",
+          "liquidity": "0",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Matt Gaetz in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "236253.59043",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Eric Adams in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "993621.049551",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Rod Blagojevich in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"1\", \"0\"]",
+          "volume": "270",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Bob Menendez in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "66746.616021",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon CZ in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "104869.755243",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Joe Exotic in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "19792.671338",
+          "liquidity": "0",
+          "end_date": "2025-04-29T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Derek Chauvin in his first 100 days?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0\", \"1\"]",
+          "volume": "133067.475656",
+          "liquidity": "",
+          "end_date": "2025-04-29T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

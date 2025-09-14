@@ -27,14 +27,16 @@ class PolymarketClient:
         Returns:
             Complete JSON response from Polymarket API
         """
-        # Build search parameters for active markets only
+        # Build search parameters for active, open markets accepting orders
         params = {
             'q': search_query,
-            'closed': 'false',  # Only active markets
-            'active': 'true'    # Ensure markets are active
+            'active': 'true',           # Only active markets (not resolved)
+            'closed': 'false',          # Only markets open for trading
+            'acceptingOrders': 'true',  # Only markets accepting new trades
+            'events_status': 'active'   # Only events with active status
         }
         
-        search_url = f"{self.base_url}/events"
+        search_url = f"{self.base_url}/public-search"
         
         try:
             async with aiohttp.ClientSession(timeout=self.timeout) as session:
@@ -46,8 +48,17 @@ class PolymarketClient:
                 async with session.get(full_url) as response:
                     if response.status == 200:
                         data = await response.json()
-                        print(f"✅ Found {len(data) if isinstance(data, list) else 'unknown number of'} markets")
-                        return data
+                        # public-search returns {"events": [...]} structure
+                        if isinstance(data, dict) and 'events' in data:
+                            events = data['events']
+                            print(f"✅ Found {len(events)} markets")
+                            return events
+                        elif isinstance(data, list):
+                            print(f"✅ Found {len(data)} markets")
+                            return data
+                        else:
+                            print(f"✅ Found unknown number of markets")
+                            return data
                     else:
                         print(f"❌ API Error: Status {response.status}")
                         error_text = await response.text()
@@ -69,11 +80,14 @@ class PolymarketClient:
         Alternative search method using text search endpoint if available
         """
         try:
-            # Try the search endpoint
-            search_url = f"{self.base_url}/search"
+            # Try the public-search endpoint
+            search_url = f"{self.base_url}/public-search"
             params = {
-                'query': search_text,
-                'active': 'true'
+                'q': search_text,
+                'active': 'true',
+                'closed': 'false',
+                'acceptingOrders': 'true',
+                'events_status': 'active'
             }
             
             async with aiohttp.ClientSession(timeout=self.timeout) as session:

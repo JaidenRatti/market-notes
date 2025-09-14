@@ -56,8 +56,8 @@ class EnhancedTweetMarketPipeline:
         print(f"🏷️  Key Topics: {sentiment_analysis['key_topics']}")
         print()
         
-        # Step 2: Polymarket Search
-        print("🔍 Step 2: Searching Polymarket for active markets...")
+        # Step 2: Polymarket Search  
+        print("🔍 Step 2: Searching Polymarket for active, open markets accepting orders...")
         market_results = await self.polymarket_client.search_active_markets(
             sentiment_analysis["search_query"]
         )
@@ -70,7 +70,15 @@ class EnhancedTweetMarketPipeline:
             }
         
         markets_found = len(market_results) if isinstance(market_results, list) else 0
-        print(f"✅ Found {markets_found} active markets")
+        print(f"✅ Found {markets_found} active markets:")
+        
+        # Display all found markets
+        if isinstance(market_results, list) and markets_found > 0:
+            print("📋 All markets found:")
+            for i, market in enumerate(market_results, 1):
+                title = market.get("title", "No title")
+                ticker = market.get("ticker", "no-ticker")
+                print(f"   {i:2d}. {title} (ticker: {ticker})")
         print()
         
         # Step 3: AI-Powered Market Ranking

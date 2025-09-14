@@ -1,0 +1,180 @@
+{
+  "original_tweet": {
+    "text": "CZ pardon odds keep rising on Polymarket with zero news. Are these Binance insiders buying or just degens doing degen stuff?",
+    "timestamp": "2025-09-14T05:58:02Z"
+  },
+  "sentiment_analysis": {
+    "search_query": "CZ pardon",
+    "key_topics": [
+      "Binance",
+      "Polymarket",
+      "CZ pardon",
+      "cryptocurrency",
+      "stock market"
+    ],
+    "sentiment_score": 0.1,
+    "confidence": 0.8
+  },
+  "ranking_summary": {
+    "total_markets_analyzed": 5,
+    "top_markets_returned": 5,
+    "ranking_method": "AI-powered relevance scoring using Cohere"
+  },
+  "top_relevant_markets": [
+    {
+      "rank": 1,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about an NBA game has no relevance to the original tweet, which discusses CZ pardon odds on Polymarket and potential involvement of Binance insiders.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "2890",
+      "title": "NBA: Will the Mavericks beat the Grizzlies by more than 5.5 points in their December 4 matchup?",
+      "description": "In the upcoming NBA game, scheduled for December 4:\n\nIf the Dallas Mavericks win by over 5.5 points, the market will resolve to “Yes”.\n\nIf the Memphis Grizzlies lose by less than 5.5 points or win, the market will resolve “No.” \n\nIf the game is not completed by December 11, 2021, the market will res",
+      "slug": "nba-will-the-mavericks-beat-the-grizzlies-by-more-than-5pt5-points-in-their-december-4-matchup",
+      "active": true,
+      "closed": true,
+      "end_date": "2021-12-04T00:00:00Z",
+      "volume_24hr": 0,
+      "liquidity": 0,
+      "comment_count": 8130,
+      "tags": [
+        "All"
+      ],
+      "prediction_markets": [
+        {
+          "question": "NBA: Will the Mavericks beat the Grizzlies by more than 5.5 points in their December 4 matchup?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0000004113679809846114013590098187297978\", \"0.9999995886320190153885986409901813\"]",
+          "volume": "1335.045385",
+          "liquidity": "50.000009",
+          "end_date": "2021-12-04T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about an NFL game has no relevance to the original tweet, which discusses the odds of a \"CZ pardon\" on Polymarket and its potential connection to Binance insiders or general market behavior.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "2891",
+      "title": "NFL: Will the Falcons beat the Panthers by more than 3.5 points in their October 31st matchup?",
+      "description": "In the upcoming NFL game:\n\nIf the Atlanta Falcons win by over 3.5 points, the market will resolve to “Yes”.\n\nIf the Carolina Panthers lose by less than 3.5 points or win, the market will resolve “No.” \n\nIf the game is not completed by November 6, 2021, the market will resolve 50-50.",
+      "slug": "nfl-will-the-falcons-beat-the-panthers-by-more-than-3pt5-points-in-their-october-31st-matchup",
+      "active": true,
+      "closed": true,
+      "end_date": "2021-10-31T00:00:00Z",
+      "volume_24hr": 0,
+      "liquidity": 0,
+      "comment_count": 3790,
+      "tags": [
+        "All"
+      ],
+      "prediction_markets": [
+        {
+          "question": "NFL: Will the Falcons beat the Panthers by more than 3.5 points in their October 31st matchup?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0000003019939811923834489517447863053176\", \"0.9999996980060188076165510482552137\"]",
+          "volume": "5332.423556",
+          "liquidity": "100.000023",
+          "end_date": "2021-10-31T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about an NFL game has no relevance to the original tweet, which discusses CZ pardon odds on Polymarket and potential insider activities related to Binance.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "2892",
+      "title": "(In-Game Trading) Will the 49ers beat the Packers by more than 3.5 points in their week three matchup?",
+      "description": "This is a market on whether the San Francisco 49ers will beat the Green Bay Packers by over 3.5 points in their NFL week three matchup scheduled to take place on September 26, 2021, at 8:20 PM ET. This market will resolve to “Yes” if the 49ers win by over 3.5 points, and “No” if the Packers lose by ",
+      "slug": "in-game-trading-will-the-49ers-beat-the-packers-by-more-than-3pt5-points-in-their-week-three-matchup",
+      "active": true,
+      "closed": true,
+      "end_date": "2021-09-26T00:00:00Z",
+      "volume_24hr": 0,
+      "liquidity": 0,
+      "comment_count": 3790,
+      "tags": [
+        "All"
+      ],
+      "prediction_markets": [
+        {
+          "question": "(In-Game Trading) Will the 49ers beat the Packers by more than 3.5 points in their week three matchup?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0000001210807878969654991034073798378452\", \"0.9999998789192121030345008965926202\"]",
+          "volume": "139186.362106",
+          "liquidity": "0.010413",
+          "end_date": "2021-09-26T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about a chess tournament has no relevance to the original tweet discussing CZ pardon odds on Polymarket and potential insider trading.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "2893",
+      "title": "2022 Norway Chess: Will Magnus Carlsen lose any game?",
+      "description": "The Norway Chess is a prestigious annual closed chess tournament, scheduled to take place this year from May 31 to June 11 in Stavanger, Norway. Ten world-class players will play against each other in 9 rounds in a round-robin tournament.\n\nIf Magnus Carlsen loses any game in the 2022 Norway Chess th",
+      "slug": "2022-norway-chess-will-magnus-carlsen-lose-any-game",
+      "active": true,
+      "closed": true,
+      "end_date": "2022-06-11T00:00:00Z",
+      "volume_24hr": 0,
+      "liquidity": 0,
+      "comment_count": 0,
+      "tags": [
+        "All"
+      ],
+      "prediction_markets": [
+        {
+          "question": "2022 Norway Chess: Will Magnus Carlsen lose any game?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.000001044758871897429360811069189234875\", \"0.9999989552411281025706391889308108\"]",
+          "volume": "89615.677225",
+          "liquidity": "223.055662",
+          "end_date": "2022-06-11T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about an NBA game has no relevance to the original tweet, which discusses CZ pardon odds on Polymarket and potential insider activities related to Binance.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "2894",
+      "title": "NBA: Will the Heat beat the Wizards by more than 7.5 points in their November 18th matchup?",
+      "description": "In the upcoming NBA game, scheduled for November 18th:\n\nIf the Miami Heat win by over 7.5 points, the market will resolve to “Yes”.\n\nIf the Washington Wizards lose by less than 7.5 points or win, the market will resolve “No.” \n\nIf the game is not completed by November 25, 2021, the market will resol",
+      "slug": "nba-will-the-heat-beat-the-wizards-by-more-than-7pt5-points-in-their-november-18th-matchup",
+      "active": true,
+      "closed": true,
+      "end_date": "2021-11-18T00:00:00Z",
+      "volume_24hr": 0,
+      "liquidity": 0,
+      "comment_count": 8130,
+      "tags": [
+        "All"
+      ],
+      "prediction_markets": [
+        {
+          "question": "NBA: Will the Heat beat the Wizards by more than 7.5 points in their November 18th matchup?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.9999993646144934685647734842674199\", \"0.0000006353855065314352265157325801248293\"]",
+          "volume": "7793.964103",
+          "liquidity": "45.000008",
+          "end_date": "2021-11-18T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

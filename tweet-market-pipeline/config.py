@@ -4,12 +4,12 @@ Configuration module for the Tweet-Market Analysis Pipeline
 import os
 from typing import Optional
 from dotenv import load_dotenv
-from pydantic import BaseSettings, validator
+from pydantic import BaseModel, field_validator
 
 # Load environment variables
 load_dotenv()
 
-class PipelineConfig(BaseSettings):
+class PipelineConfig(BaseModel):
     """Pipeline configuration settings"""
     
     # Cohere API settings
@@ -33,13 +33,15 @@ class PipelineConfig(BaseSettings):
     relevance_max_tokens: int = 200
     relevance_temperature: float = 0.2
     
-    @validator('cohere_api_key')
+    @field_validator('cohere_api_key')
+    @classmethod
     def validate_cohere_api_key(cls, v):
         if not v or v == "your_cohere_api_key_here":
             raise ValueError("COHERE_API_KEY must be set in environment or .env file")
         return v
     
-    @validator('top_markets_count')
+    @field_validator('top_markets_count')
+    @classmethod
     def validate_top_markets_count(cls, v):
         if v < 1 or v > 10:
             raise ValueError("top_markets_count must be between 1 and 10")

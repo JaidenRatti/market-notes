@@ -45,30 +45,53 @@ function formatVolumeNumber(volume) {
 
 // Function to create position card
 function createPositionCard(position) {
-  const pnlClass = position.pnl >= 0 ? 'positive' : 'negative';
-  const pnlSign = position.pnl >= 0 ? '+' : '';
-  const statusBadge = position.status === 'open' ? 'OPEN' : 'CLOSED';
-  const positionColor = position.position === 'YES' || position.position === 'Yes' ? 'yes-position' : 'no-position';
+  console.log('🔍 [DEBUG] Creating position card for:', position);
   
-  // Handle both old mock data and new real data formats
-  const shares = position.shares || position.totalBought || 0;
+  // Extract and validate fields from real Polymarket API response
+  const outcome = position.outcome || position.position || 'Unknown';
+  const pnl = position.cashPnl || position.pnl || 0;
+  const pnlClass = pnl >= 0 ? 'positive' : 'negative';
+  const pnlSign = pnl >= 0 ? '+' : '';
+  
+  // Determine position status - if redeemable is false and endDate is in future, it's open
+  const endDate = new Date(position.endDate);
+  const isOpen = !position.redeemable && endDate > new Date();
+  const statusBadge = isOpen ? 'OPEN' : 'CLOSED';
+  const statusClass = isOpen ? 'open' : 'closed';
+  
+  const positionColor = outcome === 'YES' || outcome === 'Yes' ? 'yes-position' : 'no-position';
+  
+  // Handle field mapping for different API formats
+  const shares = position.size || position.shares || position.totalBought || 0;
   const avgPrice = position.avgPrice || 0;
-  const currentPrice = position.currentPrice || position.curPrice || 0;
-  const volume = position.volume || position.currentValue || 0;
+  const currentPrice = position.curPrice || position.currentPrice || 0;
+  const currentValue = position.currentValue || position.volume || 0;
+  const title = position.title || 'Unknown Market';
+  
+  // Create unique ID from asset or slug
+  const positionId = position.asset || position.slug || position.id || 'unknown';
   
   // Format shares to show reasonable precision
   const formattedShares = shares < 1 ? shares.toFixed(4) : shares.toFixed(2);
   
+  // Format the current value properly
+  const formattedValue = isNaN(currentValue) ? '$0.00' : 
+    (typeof currentValue === 'string' ? currentValue : `$${currentValue.toFixed(2)}`);
+  
+  console.log('✅ [DEBUG] Position card data:', {
+    outcome, pnl, statusBadge, shares, avgPrice, currentPrice, currentValue, title
+  });
+  
   return `
-    <div class="position-card" data-position-id="${position.id}">
+    <div class="position-card" data-position-id="${positionId}">
       <div class="position-header">
         <div class="position-badges">
-          <span class="position-badge ${positionColor}">${position.position}</span>
-          <span class="status-badge ${position.status}">${statusBadge}</span>
+          <span class="position-badge ${positionColor}">${outcome}</span>
+          <span class="status-badge ${statusClass}">${statusBadge}</span>
         </div>
-        <div class="position-pnl ${pnlClass}">${pnlSign}$${Math.abs(position.pnl).toFixed(2)}</div>
+        <div class="position-pnl ${pnlClass}">${pnlSign}$${Math.abs(pnl).toFixed(2)}</div>
       </div>
-      <h4 class="position-title">${position.title}</h4>
+      <h4 class="position-title">${title}</h4>
       <div class="position-stats">
         <div class="stat-item">
           <span class="stat-label">Shares</span>
@@ -83,7 +106,7 @@ function createPositionCard(position) {
           <span class="stat-value">${Math.round(currentPrice * 100)}¢</span>
         </div>
       </div>
-      <div class="position-volume">Value: ${typeof volume === 'string' ? volume : `$${volume.toFixed(2)}`}</div>
+      <div class="position-volume">Value: ${formattedValue}</div>
     </div>
   `;
 }
@@ -889,21 +912,45 @@ async function executeTrade(side, amount, marketId = null) {
       message.market_id = marketId;
       
       // Try to extract token IDs from current event data
+      console.log(`🔍 [DEBUG] Searching for token IDs for market ${marketId}...`);
+      console.log(`🔍 [DEBUG] currentEventData:`, currentEventData);
+      
       if (currentEventData && currentEventData.markets) {
+        console.log(`🔍 [DEBUG] Found ${currentEventData.markets.length} markets in currentEventData`);
         const targetMarket = currentEventData.markets.find(m => m.id === marketId);
+        console.log(`🔍 [DEBUG] Target market found:`, targetMarket);
+        
         if (targetMarket && targetMarket.clobTokenIds) {
           try {
+            console.log(`🔍 [DEBUG] clobTokenIds raw:`, targetMarket.clobTokenIds);
+            console.log(`🔍 [DEBUG] clobTokenIds type:`, typeof targetMarket.clobTokenIds);
+            
             const tokenIds = typeof targetMarket.clobTokenIds === 'string' 
               ? JSON.parse(targetMarket.clobTokenIds) 
               : targetMarket.clobTokenIds;
             
-            message.yes_token_id = tokenIds[0];
-            message.no_token_id = tokenIds[1];
-            console.log(`🔍 [DEBUG] Added token IDs: YES=${tokenIds[0]}, NO=${tokenIds[1]}`);
+            console.log(`🔍 [DEBUG] Parsed token IDs:`, tokenIds);
+            
+            if (Array.isArray(tokenIds) && tokenIds.length >= 2) {
+              message.yes_token_id = tokenIds[0];
+              message.no_token_id = tokenIds[1];
+              console.log(`✅ [DEBUG] Successfully added token IDs: YES=${tokenIds[0]}, NO=${tokenIds[1]}`);
+            } else {
+              console.warn('⚠️ [DEBUG] Token IDs array is invalid:', tokenIds);
+            }
           } catch (e) {
-            console.warn('⚠️ [DEBUG] Could not parse clobTokenIds:', e);
+            console.error('❌ [DEBUG] Could not parse clobTokenIds:', e);
+            console.error('❌ [DEBUG] Raw clobTokenIds:', targetMarket.clobTokenIds);
+          }
+        } else {
+          console.warn('⚠️ [DEBUG] No clobTokenIds found in target market');
+          if (targetMarket) {
+            console.log(`🔍 [DEBUG] Target market keys:`, Object.keys(targetMarket));
           }
         }
+      } else {
+        console.warn('⚠️ [DEBUG] No currentEventData or markets available');
+        console.log(`🔍 [DEBUG] currentEventData keys:`, currentEventData ? Object.keys(currentEventData) : 'null');
       }
     }
 

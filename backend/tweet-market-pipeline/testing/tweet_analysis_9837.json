@@ -1,0 +1,386 @@
+{
+  "original_tweet": {
+    "text": "CZ pardon odds keep rising on Polymarket with zero news. Are these Binance insiders buying or just degens doing degen stuff? Guess we will find out very soon\n",
+    "timestamp": "2025-09-14T05:58:02Z"
+  },
+  "sentiment_analysis": {
+    "search_query": "CZ pardon",
+    "key_topics": [
+      "Binance",
+      "Polymarket",
+      "CZ pardon odds",
+      "cryptocurrency",
+      "stock market"
+    ],
+    "sentiment_score": 0.3,
+    "confidence": 0.8
+  },
+  "ranking_summary": {
+    "total_markets_analyzed": 5,
+    "top_markets_returned": 5,
+    "ranking_method": "AI-powered relevance scoring using Cohere"
+  },
+  "top_relevant_markets": [
+    {
+      "rank": 1,
+      "relevance_score": 0.9,
+      "relevance_explanation": "The prediction market directly relates to the original tweet's subject matter and sentiment analysis, with a clear focus on the potential pardon of Changpeng Zhao (CZ) by Trump and its odds on Polymarket.",
+      "key_matches": [
+        "CZ pardon",
+        "Polymarket",
+        "Binance",
+        "Trump"
+      ],
+      "market_id": "41132",
+      "title": "Will Trump pardon Changpeng Zhao by September 30?",
+      "description": "This market will resolve to \"Yes\" if Changpeng Zhao receives a presidential pardon, commutation, or reprieve from Donald Trump by September 30, 2025, 11:59 PM ET. Otherwise, this market will resolve to \"No\".\n\nIf it becomes impossible for Trump issue a federal pardon, commutation, or reprieve within ",
+      "slug": "will-trump-pardon-changpeng-zhao-by-september-30",
+      "active": true,
+      "closed": false,
+      "end_date": "2025-09-30T00:00:00Z",
+      "volume_24hr": 5973.57133,
+      "liquidity": 15035.9413,
+      "comment_count": 2,
+      "tags": [
+        "Politics",
+        "Trump",
+        "Trump Presidency",
+        "binance",
+        "Crypto"
+      ],
+      "prediction_markets": [
+        {
+          "question": "Will Trump pardon Changpeng Zhao by September 30?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.145\", \"0.855\"]",
+          "volume": "36746.445346",
+          "liquidity": "15035.9413",
+          "end_date": "2025-09-30T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about Trump jailing a Biden family member is completely unrelated to the original tweet about CZ pardon odds on Polymarket and potential Binance insider activity.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "21154",
+      "title": "Will Trump jail Biden family member?",
+      "description": "This market will resolve to \"Yes\" if Joe Biden, Jill Biden, Beau Biden, Hunter Biden, Ashley Biden, James \"Jim\" Biden, Sara Biden, Valerie Biden Owens, John Owens or Francis \"Frank\" Biden serve any time in a federal, state, or local U.S. jail or prison between March 17 and December 31, 2025, 11:59 P",
+      "slug": "will-trump-jail-biden-family-member",
+      "active": true,
+      "closed": false,
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24hr": 1.041665,
+      "liquidity": 4805.3222,
+      "comment_count": 1,
+      "tags": [
+        "Politics",
+        "Trump Presidency",
+        "Trump",
+        "Biden",
+        "pardon",
+        "U.S. Politics"
+      ],
+      "prediction_markets": [
+        {
+          "question": "Will Trump jail Biden family member?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.05\", \"0.95\"]",
+          "volume": "12386.123344",
+          "liquidity": "4805.3222",
+          "end_date": "2025-12-31T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about Trump and Fauci has no relevance to the original tweet about CZ and Polymarket.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "21142",
+      "title": "Will Trump jail Fauci?",
+      "description": "This market will resolve to \"Yes\" if Former Chief Medical Advisor to the President Anthony Fauci serves any time in a federal, state, or local U.S. jail or prison between March 17 and December 31, 2025, 11:59 PM ET. Otherwise, this market will resolve to \"No\".\n\nThe primary resolution source for this",
+      "slug": "will-trump-jail-fauci",
+      "active": true,
+      "closed": false,
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24hr": 0,
+      "liquidity": 21829.71205,
+      "comment_count": 6,
+      "tags": [
+        "Trump Presidency",
+        "Politics",
+        "pardon",
+        "Biden",
+        "U.S. Politics"
+      ],
+      "prediction_markets": [
+        {
+          "question": "Will Trump jail Fauci?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.022\", \"0.978\"]",
+          "volume": "10552.237156",
+          "liquidity": "21829.71205",
+          "end_date": "2025-12-31T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about Trump charging a member of the January 6 committee has no relevance to the original tweet discussing CZ pardon odds on Polymarket and potential insider trading by Binance employees.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "21149",
+      "title": "Trump charges Member of January 6 committee? ",
+      "description": "This market will resolve to \"Yes\" if any federal jurisdiction of the United States and/or the District of Columbia formally charges or otherwise announces a criminal indictment of any former member(s) of the House Select Committee to Investigate the January 6th Attack on the U.S. Capitol by December",
+      "slug": "trump-charges-member-of-january-6-committee",
+      "active": true,
+      "closed": false,
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24hr": 0,
+      "liquidity": 4873.0022,
+      "comment_count": 0,
+      "tags": [
+        "pardon",
+        "Politics",
+        "Trump",
+        "U.S. Politics"
+      ],
+      "prediction_markets": [
+        {
+          "question": "Trump charges Member of January 6 committee? ",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.07\", \"0.93\"]",
+          "volume": "2319.696104",
+          "liquidity": "4873.0022",
+          "end_date": "2025-12-31T12:00:00Z"
+        }
+      ]
+    },
+    {
+      "rank": 5,
+      "relevance_score": 0.0,
+      "relevance_explanation": "The prediction market about a potential pardon from Donald Trump to Steve Bannon is completely unrelated to the original tweet discussing the odds of a \"CZ pardon\" and the sentiment analysis topics of 'Binance' and 'Polymarket'.",
+      "key_matches": [
+        "None"
+      ],
+      "market_id": "22987",
+      "title": "Who will Trump pardon in 2025?",
+      "description": "This market will resolve to \"Yes\" if the listed individual receives a presidential pardon, commutation, or reprieve from Donald Trump by December 31, 2025, 11:59 PM ET. Otherwise, this market will resolve to \"No\".\n\nThe primary resolution source for whether the individual is pardoned or not will be o",
+      "slug": "who-will-trump-pardon-in-2025",
+      "active": true,
+      "closed": false,
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24hr": 83178.941183,
+      "liquidity": 233894.10038,
+      "comment_count": 78,
+      "tags": [
+        "Trump",
+        "Trump Presidency",
+        "Politics",
+        "Ghislaine Maxwell"
+      ],
+      "prediction_markets": [
+        {
+          "question": "Will Trump pardon Steve Bannon in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.08\", \"0.92\"]",
+          "volume": "4391.797097",
+          "liquidity": "3240.3704",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Diddy in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.07\", \"0.93\"]",
+          "volume": "189899.52403",
+          "liquidity": "16953.9117",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Edward Snowden in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0475\", \"0.9525\"]",
+          "volume": "80077.694281",
+          "liquidity": "3276.02657",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Roger Stone in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0315\", \"0.9685\"]",
+          "volume": "4831.55884",
+          "liquidity": "9652.2348",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Changpeng Zhao in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.545\", \"0.455\"]",
+          "volume": "871550.466031",
+          "liquidity": "35369.7374",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Roger Ver in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.125\", \"0.875\"]",
+          "volume": "17262.18699",
+          "liquidity": "3806.8052",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Elon Musk in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0215\", \"0.9785\"]",
+          "volume": "132707.342606",
+          "liquidity": "25769.28649",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Matt Gaetz in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.055\", \"0.945\"]",
+          "volume": "3121.440912",
+          "liquidity": "5510.9804",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Bob Menendez in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.045\", \"0.955\"]",
+          "volume": "3556.417743",
+          "liquidity": "3504.8991",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Eric Adams in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.08\", \"0.92\"]",
+          "volume": "17173.626003",
+          "liquidity": "3377.4277",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Julian Assange in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.045\", \"0.955\"]",
+          "volume": "3494.483968",
+          "liquidity": "3867.2198",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Hunter Biden in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.021\", \"0.979\"]",
+          "volume": "126612.62022",
+          "liquidity": "29582.66173",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Daniel Penny in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0325\", \"0.9675\"]",
+          "volume": "8285.150342",
+          "liquidity": "7738.66373",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Joe Exotic \"The Tiger King\" in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.045\", \"0.955\"]",
+          "volume": "4074.789182",
+          "liquidity": "4494.9591",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Sam Bankman-Fried in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.06\", \"0.94\"]",
+          "volume": "70963.808934",
+          "liquidity": "7514.4093",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Himself in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.049\", \"0.951\"]",
+          "volume": "14285.577415",
+          "liquidity": "8043.34079",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Young Thug in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.06\", \"0.94\"]",
+          "volume": "6720.774445",
+          "liquidity": "3959.6626",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Rudy Giuliani in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.07\", \"0.93\"]",
+          "volume": "17688.217819",
+          "liquidity": "5251.8454",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Derek Chauvin in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.07\", \"0.93\"]",
+          "volume": "163464.997468",
+          "liquidity": "14258.7567",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon George Santos in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.13\", \"0.87\"]",
+          "volume": "20264.504768",
+          "liquidity": "2780.2556",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Do Kwon in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0255\", \"0.9745\"]",
+          "volume": "8516.022093",
+          "liquidity": "11957.81153",
+          "end_date": "2025-12-31T00:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Antoine Massey in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0155\", \"0.9845\"]",
+          "volume": "48447.745599",
+          "liquidity": "5842.91281",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Elizabeth Holmes in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.045\", \"0.955\"]",
+          "volume": "3022.569566",
+          "liquidity": "5169.8014",
+          "end_date": "2025-12-31T12:00:00Z"
+        },
+        {
+          "question": "Will Trump pardon Ghislaine Maxwell in 2025?",
+          "outcomes": "[\"Yes\", \"No\"]",
+          "outcome_prices": "[\"0.0635\", \"0.9365\"]",
+          "volume": "239923.665891",
+          "liquidity": "11450.78013",
+          "end_date": "2025-12-31T12:00:00Z"
+        }
+      ]
+    }
+  ]
+}

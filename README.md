@@ -15,11 +15,11 @@ polymarket-trading-extension/
 ├── backend/                      # Flask Trading Backend
 │   ├── trading_backend.py         # Main Flask API server
 │   ├── requirements.txt           # Python dependencies
+|   ├── tweet-market-pipeline/         # Pipeline for processing tweets into markets
 │   └── data/                      # Sample Market Data
 │       ├── samplein.json          # Single market sample
 │       ├── samplemultimarkets.json # Multi-market sample
 │       └── sampleoneopenposition.json # Position sample
-|   ├── tweet-market-pipeline/         # Pipeline for processing tweets into markets
 
 ├── scripts/               # Utility Scripts
 │   └── start_trading.sh   # Startup script

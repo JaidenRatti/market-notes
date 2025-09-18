@@ -1,6 +1,10 @@
+
+https://github.com/user-attachments/assets/5165b281-eab6-4e89-be72-9bc77be0d31e
+
+
 # Polymarket Trading Chrome Extension
 
-A Chrome extension that integrates Polymarket prediction market trading directly into X (Twitter), featuring real-time market data, live trading capabilities, and user position tracking.
+A Chrome extension that integrates Polymarket prediction market trading directly into X (Twitter), featuring real-time market data, live trading capabilities, and user position tracking. Community Notes meet Prediction Markets: https://devpost.com/software/market-note.
 
 ## 🏗️ Project Structure
 

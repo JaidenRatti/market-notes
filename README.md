@@ -12,13 +12,15 @@ polymarket-trading-extension/
 │   ├── background.js      # Background service worker
 │   ├── styles.css         # Extension styling
 │   └── icons/             # Extension icons
-├── backend/               # Flask Trading Backend
-│   ├── trading_backend.py # Main Flask API server
-│   ├── requirements.txt   # Python dependencies
-│   └── data/              # Sample Market Data
-│       ├── samplein.json  # Single market sample
+├── backend/                      # Flask Trading Backend
+│   ├── trading_backend.py         # Main Flask API server
+│   ├── requirements.txt           # Python dependencies
+│   └── data/                      # Sample Market Data
+│       ├── samplein.json          # Single market sample
 │       ├── samplemultimarkets.json # Multi-market sample
 │       └── sampleoneopenposition.json # Position sample
+|   ├── tweet-market-pipeline/         # Pipeline for processing tweets into markets
+
 ├── scripts/               # Utility Scripts
 │   └── start_trading.sh   # Startup script
 ├── .env                   # Environment variables (Magic wallet keys)
